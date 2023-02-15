@@ -1,31 +1,21 @@
+import {uniq} from 'lodash';
+
 import config from '@/config';
-import storageHelper from '@/services/storageHelper';
 
 import SORT_BY from '@/constants/sortBy';
 
-const exports = {
+import dataService from './dataService';
+
+export type ListType = 'completed' | 'desired' | 'miscellaneous';
+
+export default {
   getMovies,
   deleteMovie,
-  saveMovie,
-  getGenres
+  saveMovie
 };
 
-let jsondata: any = null;
-async function getData() {
-  if (!jsondata) {
-    jsondata = await storageHelper.readData();
-  }
-  return jsondata;
-}
-
-async function saveData() {
-  const data = await getData();
-  if (!data) return;
-  await storageHelper.saveData(data);
-}
-
-async function getMovies(page: number, sortBy: string, searchStr: string, sortAsc: boolean) {
-  const mappedMovies = await getMappedMovies();
+async function getMovies(page: number, sortBy: string, searchStr: string, sortAsc: boolean, listType: ListType) {
+  const mappedMovies = await getMappedMovies(listType);
 
   const movies = searchMovies(mappedMovies, searchStr);
 
@@ -39,9 +29,9 @@ async function getMovies(page: number, sortBy: string, searchStr: string, sortAs
   });
 }
 
-async function deleteMovie(id: number) {
-  const data = await getData();
-  const movies = data.movies;
+async function deleteMovie(id: number, listType: ListType) {
+  const data = await dataService.getData();
+  const movies = data.movies.lists[listType];
 
   for (let i = 0; i < movies.length; i++) {
     if (movies[i].id === id) {
@@ -49,18 +39,18 @@ async function deleteMovie(id: number) {
     }
   }
 
-  return saveData();
+  return dataService.saveData();
 }
 
-function saveMovie(movie: Movie) {
-  if (movie.id) return updateMovie(movie);
+function saveMovie(movie: Movie, listType: ListType) {
+  if (movie.id) return updateMovie(movie, listType);
 
-  return addMovie(movie);
+  return addMovie(movie, listType);
 }
 
-async function updateMovie(movie: any) {
-  const data = await getData();
-  const movies = data.movies;
+async function updateMovie(movie: any, listType: ListType) {
+  const data = await dataService.getData();
+  const movies = data.movies.lists[listType];
 
   for (let i = 0; i < movies.length; i++) {
     if (movies[i].id === movie.id) {
@@ -68,12 +58,12 @@ async function updateMovie(movie: any) {
     }
   }
 
-  return saveData();
+  return dataService.saveData();
 }
 
-async function addMovie(movie: any) {
-  const data = await getData();
-  const movies = data.movies;
+async function addMovie(movie: any, listType: ListType) {
+  const data = await dataService.getData();
+  const movies = data.movies.lists[listType];
 
   let maxId = 0;
 
@@ -87,12 +77,7 @@ async function addMovie(movie: any) {
 
   movies.push(movie);
 
-  return saveData();
-}
-
-async function getGenres() {
-  const data = await getData();
-  return data.genres;
+  return dataService.saveData();
 }
 
 // helper methods
@@ -141,9 +126,10 @@ function getPage(movies: Movie[], page: number, perPage: number) {
   return movies.slice(start, end);
 }
 
-async function getMappedMovies(): Promise<Movie[]> {
-  const data = await getData();
-  const movies = data.movies;
+async function getMappedMovies(listType: ListType): Promise<Movie[]> {
+  const data = await dataService.getData();
+
+  const movies = data.movies.lists[listType];
 
   return movies.map(item => {
     return {
@@ -153,5 +139,3 @@ async function getMappedMovies(): Promise<Movie[]> {
     };
   });
 }
-
-export default exports;

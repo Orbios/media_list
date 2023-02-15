@@ -5,6 +5,8 @@ const jsonfile = require('jsonfile');
 const axios = require('axios');
 const _ = require('lodash');
 
+const PREDEFINED_LIST_TYPE = 'completed';
+
 function readData() {
   const filePath = path.join(__dirname, 'data', 'movies.csv');
 
@@ -36,22 +38,28 @@ async function generateDb(inputList) {
     axios.get(`http://www.omdbapi.com/?i=${input.id}&plot=short&r=json&apikey=219f99af`)
   );
 
-  const genres = db.genres;
+  const genres = db.movies.genres;
+  const lists = db.movies.lists;
+  const movies = _.uniq([...lists.completed, ...lists.desired, ...lists.miscellaneous]);
 
   try {
     const responses = await Promise.all(actions);
+
     for (let response of responses) {
       const movieItem = getResultItem(response.data);
-      let idExists = db.movies.some(m => m.id === movieItem.id);
+
+      const idExists = movies.some(m => m.id === movieItem.id);
+
       if (!idExists) {
         for (const genre of movieItem.genres) {
           if (!_.includes(genres, genre)) {
             genres.push(genre);
           }
         }
-        db.movies.push(movieItem);
+        db.movies.lists[PREDEFINED_LIST_TYPE].push(movieItem);
       }
     }
+
     await jsonfile.writeFile(dbPath, db);
     console.log('Imported!');
   } catch (err) {

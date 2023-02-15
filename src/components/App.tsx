@@ -9,7 +9,8 @@ import SORT_BY from '@/constants/sortBy';
 
 import notificationHelper from '@/helpers/notificationHelper';
 
-import movieService from '@/services/movieServiceStubs';
+import dataService from '@/services/dataService';
+import movieService, {ListType} from '@/services/movieServiceStubs';
 
 import Confirm from '@/components/common/Confirm';
 import Preferences from '@/components/common/Preferences';
@@ -32,6 +33,7 @@ function App() {
   const [movieToDeleteId, setMovieToDeleteId] = useState<number | null>(null);
   const [movieToEdit, setMovieToEdit] = useState<Movie | null>(null);
 
+  const [movieListType, setMovieListType] = useState<ListType>('completed');
   const [activePage, setActivePage] = useState<number>(1);
   const [sortBy, setSortBy] = useState<string>(SORT_BY.TITLE);
   const [sortAsc, setSortAsc] = useState<boolean>(true);
@@ -49,12 +51,12 @@ function App() {
   }, [sortBy, activePage, searchStr, sortAsc]);
 
   async function loadGenres() {
-    const genresList = await movieService.getGenres();
+    const genresList = await dataService.getGenresForMediaList('movies');
     setGenres(genresList);
   }
 
   async function loadMovies() {
-    const response = await movieService.getMovies(activePage, sortBy, searchStr, sortAsc);
+    const response = await movieService.getMovies(activePage, sortBy, searchStr, sortAsc, movieListType);
 
     setMovies(response.dataItems);
     setTotal(response.total);
@@ -92,7 +94,7 @@ function App() {
   async function deleteMovie() {
     if (!movieToDeleteId) return;
 
-    await movieService.deleteMovie(movieToDeleteId);
+    await movieService.deleteMovie(movieToDeleteId, movieListType);
 
     notificationHelper.message('Movie was deleted');
 
@@ -133,7 +135,7 @@ function App() {
   async function saveMovie() {
     if (!movieToEdit) return;
 
-    await movieService.saveMovie(movieToEdit);
+    await movieService.saveMovie(movieToEdit, movieListType);
 
     notificationHelper.message('Movie was saved');
 

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {uniq} from 'lodash';
 import * as csv from '@fast-csv/parse';
 import {includes} from 'lodash';
 
@@ -9,6 +10,7 @@ import storageHelper from '@/services/storageHelper';
 import {reloadMainWindow} from '@/electron/senders';
 
 const NOT_APPLICABLE = 'N/A';
+const PREDEFINED_LIST_TYPE = 'completed';
 
 interface InputList {
   id: string;
@@ -23,16 +25,17 @@ async function importMoviesFromFile(filePath: string) {
   try {
     const inputList: InputList[] = await readData(filePath);
 
-    const db = await storageHelper.readData();
-
     const actions = inputList.map(input =>
       axios.get(`http://www.omdbapi.com/?i=${input.id}&plot=short&r=json&apikey=219f99af`)
     );
 
-    const genres = db.genres;
+    const db = await storageHelper.readData();
+    const genres = db.movies.genres;
+    const lists = db.movies.lists;
+    const movies = uniq([...lists.completed, ...lists.desired, ...lists.miscellaneous]);
 
     try {
-      let movieId = db?.movies?.length ? db.movies.length + 1 : 1;
+      let movieId = movies.length ? movies.length + 1 : 1;
 
       const responses = await Promise.all(actions);
 
@@ -40,7 +43,7 @@ async function importMoviesFromFile(filePath: string) {
         const movieItem: Movie | undefined = getResultItem(response.data, movieId);
         movieId = movieId + 1;
 
-        const idExists = db.movies.some(m => m.imdbID === movieItem?.imdbID);
+        const idExists = movies.some(m => m.imdbID === movieItem?.imdbID);
 
         if (!idExists) {
           movieItem?.genres.forEach(genre => {
@@ -49,7 +52,7 @@ async function importMoviesFromFile(filePath: string) {
             }
           });
 
-          db.movies.push(movieItem);
+          db.movies.lists[PREDEFINED_LIST_TYPE].push(movieItem);
         }
       }
       await storageHelper.saveData(db);
