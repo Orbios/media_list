@@ -9,4 +9,5 @@ interface Movie {
   actors: string;
   plot: string;
   posterUrl: string;
+  lists: number[];
 }

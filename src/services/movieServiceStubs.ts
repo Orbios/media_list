@@ -7,7 +7,8 @@ const exports = {
   getMovies,
   deleteMovie,
   saveMovie,
-  getGenres
+  getGenres,
+  getMovieLists
 };
 
 let jsondata: any = null;
@@ -24,10 +25,10 @@ async function saveData() {
   await storageHelper.saveData(data);
 }
 
-async function getMovies(page: number, sortBy: string, searchStr: string, sortAsc: boolean) {
+async function getMovies(page: number, sortBy: string, searchStr: string, sortAsc: boolean, filterBy: number) {
   const mappedMovies = await getMappedMovies();
 
-  const movies = searchMovies(mappedMovies, searchStr);
+  const movies = searchMovies(mappedMovies, searchStr, filterBy);
 
   sortMovies(movies, sortBy, sortAsc);
 
@@ -41,7 +42,7 @@ async function getMovies(page: number, sortBy: string, searchStr: string, sortAs
 
 async function deleteMovie(id: number) {
   const data = await getData();
-  const movies = data.movies;
+  const movies = data.movies.items;
 
   for (let i = 0; i < movies.length; i++) {
     if (movies[i].id === id) {
@@ -60,7 +61,7 @@ function saveMovie(movie: Movie) {
 
 async function updateMovie(movie: any) {
   const data = await getData();
-  const movies = data.movies;
+  const movies = data.movies.items;
 
   for (let i = 0; i < movies.length; i++) {
     if (movies[i].id === movie.id) {
@@ -73,7 +74,7 @@ async function updateMovie(movie: any) {
 
 async function addMovie(movie: any) {
   const data = await getData();
-  const movies = data.movies;
+  const movies = data.movies.items;
 
   let maxId = 0;
 
@@ -92,12 +93,23 @@ async function addMovie(movie: any) {
 
 async function getGenres() {
   const data = await getData();
-  return data.genres;
+  return data.movies.genres;
+}
+
+async function getMovieLists() {
+  const data = await getData();
+  return data.movies.lists;
 }
 
 // helper methods
 
-function searchMovies(movies: Movie[], searchStr: string) {
+function searchMovies(movies: Movie[], searchStr: string, filterBy: number) {
+  if (filterBy) {
+    movies = movies.filter((movie: Movie) => {
+      return movie.lists.includes(filterBy);
+    });
+  }
+
   if (!searchStr) return movies;
 
   const textSearchFields: string[] = ['title', 'year', 'actors', 'director', 'plot'];
@@ -143,7 +155,7 @@ function getPage(movies: Movie[], page: number, perPage: number) {
 
 async function getMappedMovies(): Promise<Movie[]> {
   const data = await getData();
-  const movies = data.movies;
+  const movies = data.movies.items;
 
   return movies.map(item => {
     return {

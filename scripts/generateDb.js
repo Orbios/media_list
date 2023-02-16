@@ -5,6 +5,9 @@ const jsonfile = require('jsonfile');
 const axios = require('axios');
 const _ = require('lodash');
 
+//by default all imported movies are watched
+const PREDEFINED_LIST_ID = 1;
+
 function readData() {
   const filePath = path.join(__dirname, 'data', 'movies.csv');
 
@@ -30,28 +33,32 @@ function readData() {
 async function generateDb(inputList) {
   const dbPath = './scripts/data/db.json';
 
-  const db = await jsonfile.readFile(dbPath);
-
   const actions = inputList.map(input =>
     axios.get(`http://www.omdbapi.com/?i=${input.id}&plot=short&r=json&apikey=219f99af`)
   );
 
-  const genres = db.genres;
+  const db = await jsonfile.readFile(dbPath);
+
+  const genres = db.movies.genres;
 
   try {
     const responses = await Promise.all(actions);
-    for (let response of responses) {
+
+    for (const response of responses) {
       const movieItem = getResultItem(response.data);
-      let idExists = db.movies.some(m => m.id === movieItem.id);
+
+      const idExists = db.movies.items.some(m => m.id === movieItem.id);
+
       if (!idExists) {
         for (const genre of movieItem.genres) {
           if (!_.includes(genres, genre)) {
             genres.push(genre);
           }
         }
-        db.movies.push(movieItem);
+        db.movies.items.push(movieItem);
       }
     }
+
     await jsonfile.writeFile(dbPath, db);
     console.log('Imported!');
   } catch (err) {
@@ -63,7 +70,7 @@ function getResultItem(data) {
   const movieId = data.imdbID;
 
   try {
-    let item = {
+    const item = {
       id: movieId,
       title: data.Title,
       year: data.Year,
@@ -72,7 +79,8 @@ function getResultItem(data) {
       director: data.Director,
       actors: data.Actors,
       plot: data.Plot,
-      posterUrl: data.Poster !== 'N/A' ? data.Poster : ''
+      posterUrl: data.Poster !== 'N/A' ? data.Poster : '',
+      lists: [PREDEFINED_LIST_ID]
     };
 
     return item;

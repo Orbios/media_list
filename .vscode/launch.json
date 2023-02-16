@@ -54,7 +54,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Import Data",
+      "name": "Import Movies",
       "skipFiles": [
         "<node_internals>/**"
       ],

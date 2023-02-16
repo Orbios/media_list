@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import {Modal, Button} from 'react-bootstrap';
+import {Modal, Button, ButtonGroup, ToggleButton, Form} from 'react-bootstrap';
 import {isEmpty} from 'lodash';
 
 import TextInput from '../common/TextInput';
@@ -7,17 +7,24 @@ import TextAreaInput from '../common/TextAreaInput';
 import NumberInput from '../common/NumberInput';
 import SelectInput from '../common/SelectInput';
 
+interface RadioOption {
+  name: string;
+  value: number;
+}
+
 interface Props {
   visible: boolean;
   movie: Movie;
   genres: string[];
+  lists: List[];
   save: () => void;
   close: () => void;
   onChange: (field: string, value: any) => void;
 }
 
-function EditMovie({visible, movie, genres, onChange, close, save}: Props) {
+function EditMovie({visible, movie, genres, lists, onChange, close, save}: Props) {
   const [options, setOptions] = useState<BasicOption[]>([]);
+  const [listsOptions, setListsOptions] = useState<RadioOption[]>([]);
   const [errors, setErrors] = useState({title: '', year: '', runtime: '', director: '', actors: ''});
 
   useEffect(() => {
@@ -25,6 +32,11 @@ function EditMovie({visible, movie, genres, onChange, close, save}: Props) {
       return {value: genre, label: genre};
     });
     setOptions(genresOptions);
+
+    const movieListsOptions = lists.map(list => {
+      return {name: list.title, value: list.id};
+    });
+    setListsOptions(movieListsOptions);
   }, [genres]);
 
   function isEmptyErrorObject(obj: any) {
@@ -145,6 +157,26 @@ function EditMovie({visible, movie, genres, onChange, close, save}: Props) {
               onChange={onChange}
               placeholder="Plot"
             />
+
+            <Form.Group className="mb-4">
+              <Form.Label htmlFor="lists">Lists</Form.Label>
+              <br />
+              <ButtonGroup>
+                {listsOptions.map(listOption => (
+                  <ToggleButton
+                    key={listOption.value}
+                    id={`radio-${listOption.value}`}
+                    type="radio"
+                    variant={listOption.value % 2 ? 'outline-success' : 'outline-danger'}
+                    name="lists"
+                    value={listOption.value}
+                    checked={movie.lists[0] === listOption.value}
+                    onChange={e => onChange('lists', [Number(e.currentTarget.value)])}>
+                    {listOption.name}
+                  </ToggleButton>
+                ))}
+              </ButtonGroup>
+            </Form.Group>
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={onSave}>Save</Button>

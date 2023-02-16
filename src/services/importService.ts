@@ -10,6 +10,9 @@ import {reloadMainWindow} from '@/electron/senders';
 
 const NOT_APPLICABLE = 'N/A';
 
+//by default all imported movies are watched
+const PREDEFINED_LIST_ID = 1;
+
 interface InputList {
   id: string;
   title: string;
@@ -23,16 +26,16 @@ async function importMoviesFromFile(filePath: string) {
   try {
     const inputList: InputList[] = await readData(filePath);
 
-    const db = await storageHelper.readData();
-
     const actions = inputList.map(input =>
       axios.get(`http://www.omdbapi.com/?i=${input.id}&plot=short&r=json&apikey=219f99af`)
     );
 
-    const genres = db.genres;
+    const db = await storageHelper.readData();
+
+    const genres = db.movies.genres;
 
     try {
-      let movieId = db?.movies?.length ? db.movies.length + 1 : 1;
+      let movieId = db?.movies?.items?.length ? db.movies.items.length + 1 : 1;
 
       const responses = await Promise.all(actions);
 
@@ -40,7 +43,7 @@ async function importMoviesFromFile(filePath: string) {
         const movieItem: Movie | undefined = getResultItem(response.data, movieId);
         movieId = movieId + 1;
 
-        const idExists = db.movies.some(m => m.imdbID === movieItem?.imdbID);
+        const idExists = db.movies.items.some(m => m.imdbID === movieItem?.imdbID);
 
         if (!idExists) {
           movieItem?.genres.forEach(genre => {
@@ -49,7 +52,7 @@ async function importMoviesFromFile(filePath: string) {
             }
           });
 
-          db.movies.push(movieItem);
+          db.movies.items.push(movieItem);
         }
       }
       await storageHelper.saveData(db);
@@ -108,7 +111,8 @@ function getResultItem(data, id): Movie | undefined {
       director: data.Director,
       actors: data.Actors,
       plot: data.Plot,
-      posterUrl: data.Poster !== NOT_APPLICABLE ? data.Poster : ''
+      posterUrl: data.Poster !== NOT_APPLICABLE ? data.Poster : '',
+      lists: [PREDEFINED_LIST_ID]
     };
 
     return movie;

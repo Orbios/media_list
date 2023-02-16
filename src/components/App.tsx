@@ -6,6 +6,7 @@ import {useAppSelector, useAppDispatch} from '@/hooks';
 import {togglePreferencesVisibility} from '@/reducers/commonSlice';
 
 import SORT_BY from '@/constants/sortBy';
+import FILTER_BY from '@/constants/filterBy';
 
 import notificationHelper from '@/helpers/notificationHelper';
 
@@ -27,6 +28,7 @@ function App() {
 
   const [movies, setMovies] = useState<Movie[]>([]);
   const [genres, setGenres] = useState<string[]>([]);
+  const [movieLists, setMovieLists] = useState<List[]>([]);
   const [total, setTotal] = useState<number>(0);
 
   const [movieToDeleteId, setMovieToDeleteId] = useState<number | null>(null);
@@ -36,9 +38,11 @@ function App() {
   const [sortBy, setSortBy] = useState<string>(SORT_BY.TITLE);
   const [sortAsc, setSortAsc] = useState<boolean>(true);
   const [searchStr, setSearchStr] = useState<string>('');
+  const [filterBy, setFilterBy] = useState<number>(FILTER_BY.WATCHED);
 
   useEffect(() => {
     loadGenres();
+    loadMovieLists();
     loadMovies();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -46,15 +50,20 @@ function App() {
   useEffect(() => {
     loadMovies();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortBy, activePage, searchStr, sortAsc]);
+  }, [sortBy, activePage, searchStr, sortAsc, filterBy]);
 
   async function loadGenres() {
     const genresList = await movieService.getGenres();
     setGenres(genresList);
   }
 
+  async function loadMovieLists() {
+    const lists = await movieService.getMovieLists();
+    setMovieLists(lists);
+  }
+
   async function loadMovies() {
-    const response = await movieService.getMovies(activePage, sortBy, searchStr, sortAsc);
+    const response = await movieService.getMovies(activePage, sortBy, searchStr, sortAsc, filterBy);
 
     setMovies(response.dataItems);
     setTotal(response.total);
@@ -62,6 +71,11 @@ function App() {
 
   function sortByAction(key: string) {
     setSortBy(key);
+    setActivePage(1);
+  }
+
+  function filterByAction(key: number) {
+    setFilterBy(key);
     setActivePage(1);
   }
 
@@ -107,7 +121,7 @@ function App() {
 
   function updateMovieState(field: string, value: any) {
     if (!movieToEdit) return;
-
+    console.log(value);
     setMovieToEdit({...movieToEdit, [field]: value});
   }
 
@@ -122,7 +136,8 @@ function App() {
       director: '',
       actors: '',
       plot: '',
-      posterUrl: ''
+      posterUrl: '',
+      lists: []
     });
   }
 
@@ -171,6 +186,8 @@ function App() {
             searchStr={searchStr}
             sortByAction={sortByAction}
             sortByDirection={sortByDirection}
+            filterBy={filterBy}
+            filterByAction={filterByAction}
             onSearch={onSearch}
             onReset={onReset}
             onPageSelection={onPageSelection}
@@ -190,6 +207,7 @@ function App() {
               visible={editMovieVisible}
               genres={genres}
               movie={movieToEdit}
+              lists={movieLists}
               onChange={updateMovieState}
               close={cancelEditMovie}
               save={saveMovie}

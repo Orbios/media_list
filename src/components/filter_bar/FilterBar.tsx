@@ -2,7 +2,8 @@ import {useState} from 'react';
 import {Button, Dropdown, DropdownButton} from 'react-bootstrap';
 import {FaPlus, FaArrowDown, FaArrowUp} from 'react-icons/fa';
 
-import SORT_BY from '../../constants/sortBy';
+import SORT_BY from '@/constants/sortBy';
+import FILTER_BY from '@/constants/filterBy';
 
 import Pagination from '../common/Pagination';
 
@@ -13,6 +14,13 @@ const sortByOptions = [
   {key: SORT_BY.YEAR, text: 'Year'},
   {key: SORT_BY.RUNTIME, text: 'Movie runtime'}
 ];
+
+const filterByListType = [
+  {key: FILTER_BY.WATCHED, text: 'Watched'},
+  {key: FILTER_BY.WISHLIST, text: 'Wishlist'},
+  {key: FILTER_BY.ALL, text: 'All'}
+];
+
 interface Props {
   total: number;
   activePage: number;
@@ -21,6 +29,8 @@ interface Props {
   searchStr: string;
   sortByAction: (key: string) => void;
   sortByDirection: () => void;
+  filterBy: number;
+  filterByAction: (key: number) => void;
   onSearch: (searchStr: string) => void;
   onReset: () => void;
   onPageSelection: (page: number) => void;
@@ -35,6 +45,8 @@ function FilterBar({
   searchStr,
   sortByAction,
   sortByDirection,
+  filterBy,
+  filterByAction,
   onSearch,
   onReset,
   onPageSelection,
@@ -103,6 +115,16 @@ function FilterBar({
           {paginationVisible && (
             <Pagination pageCount={pageNumber} activePage={activePage} onPageSelection={onPageSelection} />
           )}
+
+          <DropdownButton variant="warning" title="Filter By: " id="filter-by-dropdown" style={{marginLeft: '10px'}}>
+            {filterByListType.map(item => {
+              return (
+                <Dropdown.Item key={item.key} onClick={() => filterByAction(item.key)} active={filterBy === item.key}>
+                  {item.text}
+                </Dropdown.Item>
+              );
+            })}
+          </DropdownButton>
         </styled.paginationContainer>
       </styled.wrapper>
     );
