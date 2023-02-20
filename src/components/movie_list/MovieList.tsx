@@ -1,6 +1,8 @@
 import {isEmpty, isNaN} from 'lodash';
 import {RiDeleteBinLine, RiEditLine} from 'react-icons/ri';
 
+import notificationHelper from '@/helpers/notificationHelper';
+
 import ImageRender from './ImageRender';
 
 import * as styled from './MovieList.styled';
@@ -20,9 +22,20 @@ function MovieList({movies, onEditMovie, confirmDeleteMovie}: Props) {
     onEditMovie(movie);
   }
 
+  function openLink(imdbID: string) {
+    if (!imdbID) {
+      notificationHelper.error('IMDB ID is not defined');
+      return;
+    }
+
+    const url = `https://www.imdb.com/title/${imdbID}`;
+
+    window.open(url, '_blank');
+  }
+
   function renderMovie(movie: Movie) {
     const displayRuntime = isNaN(movie.runtime) ? 'N/A' : `${movie.runtime} min.`;
-    
+
     return (
       <styled.movieRow key={movie.id}>
         <styled.imageContainer>
@@ -31,7 +44,7 @@ function MovieList({movies, onEditMovie, confirmDeleteMovie}: Props) {
 
         <styled.content>
           <styled.header>
-            <styled.actionLink variant="link" onClick={() => updateMovie(movie)}>
+            <styled.actionLink variant="link" onClick={() => openLink(movie.imdbID)}>
               {movie.title}
             </styled.actionLink>
             <styled.actionButton variant="outline-secondary" size="sm" onClick={() => confirmDeleteMovie(movie.id)}>
