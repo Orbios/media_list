@@ -1,7 +1,7 @@
 import {store} from '@/store';
 import {getDbFilePath} from '@/files/fileAccess';
 
-import moviesData from '@/data/db.json';
+import moviesData from '@/data/media_list.json';
 
 const fs = require('fs-extra');
 

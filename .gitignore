@@ -30,4 +30,4 @@ pnpm-lock.yaml
 yarn.lock
 
 #data bases
-db.json
+/media_list.json

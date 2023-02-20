@@ -31,7 +31,7 @@ function readData() {
 }
 
 async function generateDb(inputList) {
-  const dbPath = './scripts/data/db.json';
+  const dbPath = './scripts/data/media_list.json';
 
   const actions = inputList.map(input =>
     axios.get(`http://www.omdbapi.com/?i=${input.id}&plot=short&r=json&apikey=219f99af`)

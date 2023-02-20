@@ -1,4 +1,4 @@
 export default {
-  dbFileName: 'db.json',
+  dbFileName: 'media_list.json',
   pageSize: 10
 };
