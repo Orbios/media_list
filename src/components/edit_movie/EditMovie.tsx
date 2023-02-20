@@ -167,7 +167,7 @@ function EditMovie({visible, movie, genres, lists, onChange, close, save}: Props
                     key={listOption.value}
                     id={`radio-${listOption.value}`}
                     type="radio"
-                    variant={listOption.value % 2 ? 'outline-success' : 'outline-danger'}
+                    variant={listOption.value % 2 ? 'outline-success' : 'outline-warning'}
                     name="lists"
                     value={listOption.value}
                     checked={movie.lists[0] === listOption.value}
