@@ -106,7 +106,7 @@ async function getMovieLists() {
 function searchMovies(movies: Movie[], searchStr: string, filterBy: number) {
   if (filterBy) {
     movies = movies.filter((movie: Movie) => {
-      return movie.lists.includes(filterBy);
+      return movie?.lists?.includes(filterBy);
     });
   }
 
