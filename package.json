@@ -12,7 +12,7 @@
     }
   },
   "scripts": {
-    "dev": "vite",
+    "start": "vite",
     "build": "tsc && vite build && electron-builder",
     "preview": "vite preview",
     "format": "prettier \"src/**/*.{js,json,css,ts,tsx}\" --write && prettier \"electron/**/*.ts\" --write"
