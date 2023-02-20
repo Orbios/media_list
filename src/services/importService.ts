@@ -12,6 +12,7 @@ const NOT_APPLICABLE = 'N/A';
 
 //by default all imported movies are watched
 const PREDEFINED_LIST_ID = 1;
+const RELOAD_TIMEOUT = 3000;
 
 interface InputList {
   id: string;
@@ -34,37 +35,45 @@ async function importMoviesFromFile(filePath: string) {
 
     const genres = db.movies.genres;
 
-    try {
-      let movieId = db?.movies?.items?.length ? db.movies.items.length + 1 : 1;
+    let movieId = db?.movies?.items?.length ? db.movies.items.length + 1 : 1;
 
-      const responses = await Promise.all(actions);
+    const responses = await Promise.all(actions);
 
-      for (const response of responses) {
-        const movieItem: Movie | undefined = getResultItem(response.data, movieId);
-        movieId = movieId + 1;
+    let added = 0;
+    let skipped = 0;
 
-        const idExists = db.movies.items.some(m => m.imdbID === movieItem?.imdbID);
+    for (const response of responses) {
+      const movieItem: Movie | undefined = getResultItem(response.data, movieId);
+      movieId = movieId + 1;
 
-        if (!idExists) {
-          movieItem?.genres.forEach(genre => {
-            if (!includes(genres, genre)) {
-              genres.push(genre);
-            }
-          });
+      const idExists = db.movies.items.some(m => m.imdbID === movieItem?.imdbID);
 
-          db.movies.items.push(movieItem);
-        }
+      if (idExists) {
+        skipped = skipped + 1;
+        continue;
       }
-      await storageHelper.saveData(db);
 
-      notificationHelper.message('Movies were successfully imported!');
+      movieItem?.genres.forEach(genre => {
+        if (!includes(genres, genre)) {
+          genres.push(genre);
+        }
+      });
 
-      reloadMainWindow();
-    } catch (err) {
-      console.log(err);
+      db.movies.items.push(movieItem);
+      added = added + 1;
+    }
+    await storageHelper.saveData(db);
+
+    notificationHelper.message(`Movies were successfully imported! Added: ${added}, Skipped: ${skipped}`);
+
+    if (added > 0) {
+      setTimeout(() => {
+        reloadMainWindow();
+      }, RELOAD_TIMEOUT);
     }
   } catch (err) {
     console.log(err);
+    notificationHelper.error('Error while importing movies!');
   }
 }
 
