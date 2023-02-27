@@ -18,6 +18,7 @@ import Preferences from '@/components/common/Preferences';
 import FilterBar from './filter_bar/FilterBar';
 import MovieList from './movie_list/MovieList';
 import EditMovie from './edit_movie/EditMovie';
+import CreateMovie from './edit_movie/CreateMovie';
 
 import * as styled from './App.styled';
 
@@ -33,6 +34,7 @@ function App() {
 
   const [movieToDeleteId, setMovieToDeleteId] = useState<number | null>(null);
   const [movieToEdit, setMovieToEdit] = useState<Movie | null>(null);
+  const [createMovieModalVisible, setCreateMovieModalVisible] = useState<boolean>(false);
 
   const [activePage, setActivePage] = useState<number>(1);
   const [sortBy, setSortBy] = useState<string>(SORT_BY.TITLE);
@@ -119,26 +121,19 @@ function App() {
     setMovieToDeleteId(null);
   }
 
+  function closeCreateMovieModal() {
+    setCreateMovieModalVisible(false);
+  }
+
+  function onCreateMovie(movie: Movie) {
+    setMovieToEdit(movie);
+    closeCreateMovieModal();
+  }
+
   function updateMovieState(field: string, value: any) {
     if (!movieToEdit) return;
     console.log(value);
     setMovieToEdit({...movieToEdit, [field]: value});
-  }
-
-  function onAddMovie() {
-    setMovieToEdit({
-      id: 0,
-      imdbID: '',
-      title: '',
-      year: 2016,
-      runtime: 120,
-      genres: [],
-      director: '',
-      actors: '',
-      plot: '',
-      posterUrl: '',
-      lists: []
-    });
   }
 
   function onEditMovie(movie: Movie) {
@@ -191,7 +186,7 @@ function App() {
             onSearch={onSearch}
             onReset={onReset}
             onPageSelection={onPageSelection}
-            onAddMovie={onAddMovie}
+            onAddMovie={() => setCreateMovieModalVisible(true)}
           />
 
           {anyMovies && renderMoviesCounter()}
@@ -212,6 +207,10 @@ function App() {
               close={cancelEditMovie}
               save={saveMovie}
             />
+          )}
+
+          {createMovieModalVisible && (
+            <CreateMovie visible={createMovieModalVisible} close={closeCreateMovieModal} action={onCreateMovie} />
           )}
         </Container>
 

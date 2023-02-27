@@ -102,90 +102,81 @@ function EditMovie({visible, movie, genres, lists, onChange, close, save}: Props
     });
 
     return (
-      <div>
-        <Modal show={visible} onHide={close}>
-          <Modal.Header closeButton onClick={close}>
-            <Modal.Title>Edit movie</Modal.Title>
-          </Modal.Header>
+      <Modal show={visible} onHide={close}>
+        <Modal.Header closeButton onClick={close}>
+          <Modal.Title>Edit movie</Modal.Title>
+        </Modal.Header>
 
-          <Modal.Body>
-            <TextInput
-              name="title"
-              label="Title"
-              value={movie.title}
-              onChange={onChange}
-              placeholder="Title"
-              error={errors.title}
-            />
+        <Modal.Body>
+          <TextInput
+            name="title"
+            label="Title"
+            value={movie.title}
+            onChange={onChange}
+            placeholder="Title"
+            error={errors.title}
+          />
 
-            <NumberInput name="year" label="Year" value={movie.year} onChange={onChange} error={errors.year} />
+          <NumberInput name="year" label="Year" value={movie.year} onChange={onChange} error={errors.year} />
 
-            <NumberInput
-              name="runtime"
-              label="Runtime"
-              value={movie.runtime}
-              onChange={onChange}
-              error={errors.runtime}
-            />
+          <NumberInput
+            name="runtime"
+            label="Runtime"
+            value={movie.runtime}
+            onChange={onChange}
+            error={errors.runtime}
+          />
 
-            <SelectInput name="genres" label="Genres" options={options} value={selectedGenres} onChange={onChange} />
+          <SelectInput name="genres" label="Genres" options={options} value={selectedGenres} onChange={onChange} />
 
-            <TextInput
-              name="director"
-              label="Director"
-              value={movie.director}
-              onChange={onChange}
-              placeholder="Director"
-              error={errors.director}
-            />
+          <TextInput
+            name="director"
+            label="Director"
+            value={movie.director}
+            onChange={onChange}
+            placeholder="Director"
+            error={errors.director}
+          />
 
-            <TextAreaInput
-              name="actors"
-              rows={2}
-              label="Actors (comma separated)"
-              value={movie.actors}
-              onChange={onChange}
-              placeholder="Actors"
-              error={errors.actors}
-            />
+          <TextAreaInput
+            name="actors"
+            rows={2}
+            label="Actors (comma separated)"
+            value={movie.actors}
+            onChange={onChange}
+            placeholder="Actors"
+            error={errors.actors}
+          />
 
-            <TextAreaInput
-              name="plot"
-              rows={4}
-              label="Plot"
-              value={movie.plot}
-              onChange={onChange}
-              placeholder="Plot"
-            />
+          <TextAreaInput name="plot" rows={4} label="Plot" value={movie.plot} onChange={onChange} placeholder="Plot" />
 
-            <Form.Group className="mb-4">
-              <Form.Label htmlFor="lists">Lists</Form.Label>
-              <br />
-              <ButtonGroup>
-                {listsOptions.map(listOption => (
-                  <ToggleButton
-                    key={listOption.value}
-                    id={`radio-${listOption.value}`}
-                    type="radio"
-                    variant={listOption.value % 2 ? 'outline-success' : 'outline-warning'}
-                    name="lists"
-                    value={listOption.value}
-                    checked={movie.lists[0] === listOption.value}
-                    onChange={e => onChange('lists', [Number(e.currentTarget.value)])}>
-                    {listOption.name}
-                  </ToggleButton>
-                ))}
-              </ButtonGroup>
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={onSave}>Save</Button>
-            <Button variant="secondary" onClick={close}>
-              Cancel
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </div>
+          <Form.Group className="mb-4">
+            <Form.Label htmlFor="lists">Lists</Form.Label>
+            <br />
+            <ButtonGroup>
+              {listsOptions.map(listOption => (
+                <ToggleButton
+                  key={listOption.value}
+                  id={`radio-${listOption.value}`}
+                  type="radio"
+                  variant={listOption.value % 2 ? 'outline-success' : 'outline-warning'}
+                  name="lists"
+                  value={listOption.value}
+                  checked={movie.lists[0] === listOption.value}
+                  onChange={e => onChange('lists', [Number(e.currentTarget.value)])}>
+                  {listOption.name}
+                </ToggleButton>
+              ))}
+            </ButtonGroup>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={onSave}>Save</Button>
+          <Button variant="secondary" onClick={close}>
+            Cancel
+          </Button>
+        </Modal.Footer>
+      </Modal>
     );
   }
 

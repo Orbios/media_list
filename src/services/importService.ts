@@ -20,7 +20,9 @@ interface InputList {
 }
 
 const exports = {
-  importMoviesFromFile
+  importMoviesFromFile,
+  searchMoviesByTitle,
+  getMovieByIMDBId
 };
 
 async function importMoviesFromFile(filePath: string) {
@@ -77,6 +79,40 @@ async function importMoviesFromFile(filePath: string) {
   }
 }
 
+async function searchMoviesByTitle(searchStr: string): Promise<MovieTruncated[] | undefined> {
+  try {
+    const response = await axios.get(`http://www.omdbapi.com/?s=${searchStr}&plot=short&r=json&apikey=219f99af`);
+
+    if (response.data.Response === 'False') return undefined;
+
+    return response.data.Search.map((item: any) => {
+      return {
+        imdbID: item.imdbID,
+        title: item.Title,
+        year: item.Year,
+        type: item.Type,
+        poster: item.Poster
+      };
+    });
+  } catch (err) {
+    console.log(err);
+    notificationHelper.error('Error while searching movies!');
+  }
+}
+
+async function getMovieByIMDBId(id: string): Promise<Movie | undefined> {
+  try {
+    const response = await axios.get(`http://www.omdbapi.com/?i=${id}&plot=short&r=json&apikey=219f99af`);
+
+    if (response.data.Response === 'False') return undefined;
+
+    return getResultItem(response.data, 0);
+  } catch (err) {
+    console.log(err);
+    notificationHelper.error('Error while getting movie by IMDB id!');
+  }
+}
+
 //helper methods
 
 function readData(filePath: string): Promise<InputList[]> {
@@ -101,6 +137,7 @@ function readData(filePath: string): Promise<InputList[]> {
 
 function getResultItem(data, id): Movie | undefined {
   const movieId = data.imdbID;
+
   const runtime =
     data.Runtime !== NOT_APPLICABLE ? data.Runtime.substring(0, data.Runtime.length - 1 - 3) : data.Runtime;
 
