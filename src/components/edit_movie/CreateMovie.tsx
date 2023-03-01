@@ -1,32 +1,32 @@
 import {useEffect, useState} from 'react';
-import {Modal, Button, Form} from 'react-bootstrap';
+import {Modal, Button} from 'react-bootstrap';
 import styled from 'styled-components';
 import {isEmpty} from 'lodash';
+import {RiEditLine} from 'react-icons/ri';
+import {FaPlus} from 'react-icons/fa';
 
 import importService from '@/services/importService';
+import movieServiceStubs from '@/services/movieServiceStubs';
 
 import TextInput from '@/components/common/TextInput';
 import ImageRender from '../movie_list/ImageRender';
 
-const ContainerCentered = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-const SearchContainer = styled.div<{searchMode: boolean}>`
-  height: ${props => (props.searchMode ? '325px' : 'auto')};
+const SearchContainer = styled.div`
+  height: 325px;
   overflow-y: auto;
 `;
 
-const MovieItem = styled.div<{searchMode: boolean}>`
+const MovieItem = styled.div`
   display: flex;
-  cursor: pointer;
   padding: 10px;
-  border-bottom: ${props => (props.searchMode ? '1px solid #ccc' : 'none')};
+  border-bottom: 1px solid #ccc;
 `;
 
 const MovieContent = styled.div`
+  display: flex;
+  justify-content: space-between;
   margin-left: 10px;
+  width: 100%;
 `;
 
 interface Props {
@@ -36,14 +36,21 @@ interface Props {
 }
 
 function CreateMovie({visible, close, action}: Props) {
-  const [isCustomMode, setIsCustomMode] = useState<boolean>(false);
-  const [movieToImport, setMovieToImport] = useState<MovieTruncated | null>(null);
   const [searchStr, setSearchStr] = useState<string>('');
   const [searchResults, setSearchResults] = useState<MovieTruncated[]>([]);
+  const [allMovies, setAllMovies] = useState<Movie[]>([]);
+
+  useEffect(() => {
+    async function fetchMovies() {
+      const movies: Movie[] = await movieServiceStubs.getAllMovies();
+      setAllMovies(movies);
+    }
+
+    fetchMovies();
+  }, []);
 
   useEffect(() => {
     handleSearch();
-    setMovieToImport(null);
   }, [searchStr]);
 
   async function handleSearch() {
@@ -52,119 +59,121 @@ function CreateMovie({visible, close, action}: Props) {
       return;
     }
 
-    const results: MovieTruncated[] | undefined = await importService.searchMoviesByTitle(searchStr);
-    if (!results) {
+    const moviesTruncated: MovieTruncated[] | undefined = await importService.searchMoviesByTitle(searchStr);
+    if (!moviesTruncated) {
       setSearchResults([]);
       return;
     }
 
+    const results = moviesTruncated.map(movie => {
+      const movieInDb = allMovies.find(
+        m => m.imdbID === movie.imdbID || (m.title === movie.title && m.year.toString() === movie.year)
+      );
+
+      if (movieInDb) movie.id = movieInDb.id;
+
+      return movie;
+    });
+
     setSearchResults(results);
   }
 
-  function selectMovie(movie: MovieTruncated) {
-    setSearchResults([movie]);
-    setMovieToImport(movie);
+  async function addCustomMovie() {
+    const movieToAdd: Movie = {
+      id: 0,
+      imdbID: '',
+      title: '',
+      year: 2016,
+      runtime: 120,
+      genres: [],
+      director: '',
+      actors: '',
+      plot: '',
+      posterUrl: '',
+      lists: []
+    };
+
+    await action(movieToAdd);
   }
 
-  async function handleAction() {
-    if (isCustomMode) {
-      const movieToAdd: Movie = {
-        id: 0,
-        imdbID: '',
-        title: '',
-        year: 2016,
-        runtime: 120,
-        genres: [],
-        director: '',
-        actors: '',
-        plot: '',
-        posterUrl: '',
-        lists: []
-      };
-
-      return action(movieToAdd);
-    }
-
-    const movie: Movie | undefined = await importService.getMovieByIMDBId(movieToImport?.imdbID || '');
+  async function createMovie(imdbID: string) {
+    const movie: Movie | undefined = await importService.getMovieByIMDBId(imdbID);
 
     if (!movie) return;
 
-    action(movie);
+    await action(movie);
   }
 
-  function render() {
-    let disabled = true;
-    if (isCustomMode) disabled = false;
-    if (movieToImport) disabled = false;
+  async function editMovie(movieId?: number) {
+    if (!movieId) return;
 
-    const searchMode = movieToImport ? false : true;
+    const movieToEdit = allMovies.find(m => m.id === movieId);
 
-    return (
-      <Modal show={visible} onHide={close}>
-        <Modal.Header closeButton onClick={close}>
-          <Modal.Title>Create Movie</Modal.Title>
-        </Modal.Header>
+    if (!movieToEdit) return;
 
-        <Modal.Body>
-          <p>You can search for a movie to import or create a new one.</p>
-          <TextInput
-            name="searchStr"
-            label="Search for a movie"
-            value={searchStr}
-            onChange={(field, value) => setSearchStr(value)}
-            placeholder="Search"
-          />
+    await action(movieToEdit);
+  }
 
-          {!isEmpty(searchResults) && (
-            <SearchContainer searchMode={searchMode}>
-              {searchResults.map((movie: MovieTruncated) => {
-                return (
-                  <MovieItem key={movie.imdbID} searchMode={searchMode} onClick={() => selectMovie(movie)}>
-                    <ImageRender title={movie.title} url={movie.poster} />
+  return (
+    <Modal show={visible} onHide={close}>
+      <Modal.Header closeButton onClick={close}>
+        <Modal.Title>Create Movie</Modal.Title>
+      </Modal.Header>
 
-                    <MovieContent>
+      <Modal.Body>
+        <p>You can search for a movie to import or create a new one.</p>
+        <TextInput
+          name="searchStr"
+          label="Search for a movie"
+          value={searchStr}
+          onChange={(field, value) => setSearchStr(value)}
+          placeholder="Search"
+        />
+
+        {!isEmpty(searchResults) && (
+          <SearchContainer>
+            {searchResults.map((movie: MovieTruncated) => {
+              return (
+                <MovieItem key={movie.imdbID}>
+                  <ImageRender title={movie.title} url={movie.poster} />
+
+                  <MovieContent>
+                    <div>
                       <h5>{movie.title}</h5>
                       <p>
                         {movie.year} | {movie.type}
                       </p>
-                    </MovieContent>
-                  </MovieItem>
-                );
-              })}
-            </SearchContainer>
-          )}
+                    </div>
 
-          {searchStr.length >= 3 && isEmpty(searchResults) && <p>No results found.</p>}
+                    <div>
+                      {movie.id ? (
+                        <Button variant="outline-secondary" size="sm" onClick={() => editMovie(movie.id)}>
+                          <RiEditLine />
+                        </Button>
+                      ) : (
+                        <Button variant="success" size="sm" onClick={() => createMovie(movie.imdbID)}>
+                          <FaPlus />
+                        </Button>
+                      )}
+                    </div>
+                  </MovieContent>
+                </MovieItem>
+              );
+            })}
+          </SearchContainer>
+        )}
 
-          <ContainerCentered>
-            <p>OR</p>
-          </ContainerCentered>
+        {searchStr.length >= 3 && isEmpty(searchResults) && <p>No results found.</p>}
+      </Modal.Body>
 
-          <Form.Group className="mb-3" controlId="formBasicCheckbox">
-            <Form.Check type="checkbox" id="custom-mode">
-              <Form.Check.Input
-                type="checkbox"
-                value={isCustomMode.toString()}
-                onChange={e => setIsCustomMode(e.target.checked)}
-              />
-              <Form.Check.Label>Create custom movie</Form.Check.Label>
-            </Form.Check>
-          </Form.Group>
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button onClick={handleAction} disabled={disabled}>
-            Proceed
-          </Button>
-          <Button variant="secondary" onClick={close}>
-            Cancel
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
-
-  return render();
+      <Modal.Footer>
+        <Button onClick={addCustomMovie}>Add Custom</Button>
+        <Button variant="secondary" onClick={close}>
+          Cancel
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
 }
 
 export default CreateMovie;

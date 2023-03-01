@@ -5,6 +5,7 @@ import SORT_BY from '@/constants/sortBy';
 
 const exports = {
   getMovies,
+  getAllMovies,
   deleteMovie,
   saveMovie,
   getGenres,
@@ -26,7 +27,7 @@ async function saveData() {
 }
 
 async function getMovies(page: number, sortBy: string, searchStr: string, sortAsc: boolean, filterBy: number) {
-  const mappedMovies = await getMappedMovies();
+  const mappedMovies = await getAllMovies();
 
   const movies = searchMovies(mappedMovies, searchStr, filterBy);
 
@@ -37,6 +38,19 @@ async function getMovies(page: number, sortBy: string, searchStr: string, sortAs
   return Promise.resolve({
     total: movies.length,
     dataItems: result
+  });
+}
+
+async function getAllMovies(): Promise<Movie[]> {
+  const data = await getData();
+  const movies = data.movies.items;
+
+  return movies.map(item => {
+    return {
+      ...item,
+      year: Number(item.year),
+      runtime: Number(item.runtime)
+    };
   });
 }
 
@@ -151,19 +165,6 @@ function getPage(movies: Movie[], page: number, perPage: number) {
   const start = (page - 1) * perPage;
   const end = page * perPage;
   return movies.slice(start, end);
-}
-
-async function getMappedMovies(): Promise<Movie[]> {
-  const data = await getData();
-  const movies = data.movies.items;
-
-  return movies.map(item => {
-    return {
-      ...item,
-      year: Number(item.year),
-      runtime: Number(item.runtime)
-    };
-  });
 }
 
 export default exports;

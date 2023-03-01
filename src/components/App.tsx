@@ -132,7 +132,6 @@ function App() {
 
   function updateMovieState(field: string, value: any) {
     if (!movieToEdit) return;
-    console.log(value);
     setMovieToEdit({...movieToEdit, [field]: value});
   }
 
