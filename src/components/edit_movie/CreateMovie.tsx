@@ -13,7 +13,7 @@ import ImageRender from '../movie_list/ImageRender';
 
 const SearchContainer = styled.div`
   height: 325px;
-  overflow-y: auto;
+  overflow-y: scroll;
 `;
 
 const MovieItem = styled.div`
