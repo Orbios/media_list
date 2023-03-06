@@ -2,7 +2,7 @@
   "name": "media-list",
   "version": "1.0.0",
   "main": "dist-electron/main/index.js",
-  "description": "Electron Vite React boilerplate.",
+  "description": "A media management application built with Electron, Vite, and React, allowing users to import, manage, and track their collections of movies, books, and games",
   "author": "Erik Sytnyk",
   "license": "MIT",
   "private": true,

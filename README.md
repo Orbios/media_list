@@ -1,76 +1,41 @@
-# electron-vite-react
+# Media List
 
-[![awesome-vite](https://awesome.re/mentioned-badge.svg)](https://github.com/vitejs/awesome-vite)
-![GitHub stars](https://img.shields.io/github/stars/caoxiemeihao/vite-react-electron?color=fa6470)
-![GitHub issues](https://img.shields.io/github/issues/caoxiemeihao/vite-react-electron?color=d8b22d)
-![GitHub license](https://img.shields.io/github/license/caoxiemeihao/vite-react-electron)
-[![Required Node.JS >= 14.18.0 || >=16.0.0](https://img.shields.io/static/v1?label=node&message=14.18.0%20||%20%3E=16.0.0&logo=node.js&color=3f893e)](https://nodejs.org/about/releases)
+`Media List` is an **Electron** application built with **Vite** and **React**, designed to help users manage their collection of movies. In future releases, the application will also support managing collections of books and games.
 
-English | [简体中文](README.zh-CN.md)
+## Features
 
-## 👀 Overview
+### `Import movies from CSV file`
 
-📦 Ready out of the box  
-🎯 Based on the official [template-react-ts](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts), project structure will be familiar to you  
-🌱 Easily extendable and customizable  
-💪 Supports Node.js API in the renderer process  
-🔩 Supports C/C++ native addons  
-🐞 Debugger configuration included  
-🖥 Easy to implement multiple windows  
+**Media List** allows users to import movies from a CSV file downloaded from IMDB. The imported data is stored in a JSON file on the local machine, or it can be stored in Dropbox.
 
-## 🛫 Quick start
+### `Add, edit, or delete movies`
 
-```sh
-npm create electron-vite
+Users can add new movies to their collection, edit the details of existing movies, or delete movies they no longer want to keep track of.
+
+### `Search, pagination, sorting, and filtering`
+
+The current version of **Media List** includes searching movies, pagination, sorting by _title_, _year_, and _runtime_, and a filter for "_All movies_," "_Watched_" movies, and "_Wishlist_" movies.
+
+### `Import movie by searching on IMDb`
+
+Users can search for movies on IMDb and import them into their collection directly from the application.
+
+## Future Enhancements
+
+In future releases, **Media List** will also support managing collections of books and games.
+
+## For developers
+
+Project is based on following template: [https://github.com/electron-vite/electron-vite-react](https://github.com/electron-vite/electron-vite-react)
+
+```bash
+# start local dev env
+npm run start
+
+# build installation package for current OS
+npm run build
 ```
 
-![electron-vite-react.gif](/public/electron-vite-react.gif)
+## Install (from the latest release)
 
-## 🐞 Debug
-
-![electron-vite-react-debug.gif](/public/electron-vite-react-debug.gif)
-
-## 📂 Directory structure
-
-Familiar React application structure, just with `electron` folder on the top :wink:  
-*Files in this folder will be separated from your React application and built into `dist-electron`*  
-
-```tree
-├── electron                                 Electron-related code
-│   ├── main                                 Main-process source code
-│   └── preload                              Preload-scripts source code
-│
-├── release                                  Generated after production build, contains executables
-│   └── {version}
-│       ├── {os}-{os_arch}                   Contains unpacked application executable
-│       └── {app_name}_{version}.{ext}       Installer for the application
-│
-├── public                                   Static assets
-└── src                                      Renderer source code, your React application
-```
-
-## 🚨 Be aware
-
-This template integrates Node.js API to the renderer process by default. If you want to follow **Electron Security Concerns** you might want to disable this feature. You will have to expose needed API by yourself.  
-
-To get started, remove the option as shown below. This will [modify the Vite configuration and disable this feature](https://github.com/electron-vite/vite-plugin-electron-renderer#config-presets-opinionated).
-
-```diff
-# vite.config.ts
-
-export default {
-  plugins: [
-    ...
--   // Use Node.js API in the Renderer-process
--   renderer({
--     nodeIntegration: true,
--   }),
-    ...
-  ],
-}
-```
-
-## ❔ FAQ
-
-- [dependencies vs devDependencies](https://github.com/electron-vite/vite-plugin-electron-renderer#dependencies-vs-devdependencies)
-- [C/C++ addons, Node.js modules - Pre-Bundling](https://github.com/electron-vite/vite-plugin-electron-renderer#dependency-pre-bundling)
+Download the app from [the latest release](https://github.com/Orbios/media_list/releases).
