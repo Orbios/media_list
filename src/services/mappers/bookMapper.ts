@@ -1,7 +1,5 @@
 import {find} from 'lodash';
 
-import formatHelper from '@/helpers/formatHelper';
-
 const exports = {
   getDefaultCustomBook,
   mapGoogleBookToBook,
@@ -18,8 +16,6 @@ function getDefaultCustomBook(): Book {
     description: '',
     authors: [],
     genres: [],
-    publishedDate: 2020,
-    pageCount: 0,
     language: 'ru',
     posterUrl: '',
     lists: []
@@ -40,8 +36,6 @@ function mapGoogleBookToBook(googleBook: GoogleBook) {
     description: volumeInfo.description,
     authors: volumeInfo.authors,
     genres: volumeInfo.categories,
-    publishedDate: formatHelper.getYearFromDate(volumeInfo.publishedDate),
-    pageCount: Number(volumeInfo.pageCount),
     language: volumeInfo.language,
     posterUrl: volumeInfo.imageLinks?.thumbnail || volumeInfo.imageLinks?.smallThumbnail || '',
     lists: [1] //read
@@ -54,10 +48,7 @@ function mapBooks(books: GoogleBook[], allBooks: Book[]): GoogleBook[] {
   const mappedBooks = books.map(googleBook => {
     const bookInDb: Book | undefined = find(
       allBooks,
-      (book: Book) =>
-        book.googleId === googleBook.googleId ||
-        (book.title === googleBook.volumeInfo.title &&
-          book.publishedDate.toString() === googleBook.volumeInfo.publishedDate)
+      (book: Book) => book.googleId === googleBook.googleId || book.title === googleBook.volumeInfo.title
     );
 
     if (bookInDb) googleBook.id = bookInDb.id;

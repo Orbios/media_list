@@ -144,14 +144,7 @@ function searchBooks(books: Book[], searchStr: string, filterBy: number) {
 
   if (!searchStr) return books;
 
-  const textSearchFields: string[] = [
-    'title',
-    'alternativeTitle',
-    'subtitle',
-    'authors',
-    'publishedDate',
-    'description'
-  ];
+  const textSearchFields: string[] = ['title', 'alternativeTitle', 'subtitle', 'authors', 'description'];
 
   return books.filter((book: any) => {
     for (const field of textSearchFields) {
@@ -174,10 +167,6 @@ function sortBooks(books: Book[], sortBy: string, isAsc: boolean) {
 
   if (sortBy === SORT_BY.TITLE) {
     books.sort((x, y) => x.title.localeCompare(y.title) * dirNum);
-  }
-
-  if (sortBy === SORT_BY.PUBLISHED_DATE) {
-    books.sort((x: any, y: any) => (x.publishedDate - y.publishedDate) * dirNum);
   }
 }
 

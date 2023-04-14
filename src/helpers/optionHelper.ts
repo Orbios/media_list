@@ -15,10 +15,7 @@ function getSortByOptions(entity: entityType): BasicOption[] {
     ];
   }
 
-  return [
-    {value: SORT_BY.TITLE, label: 'Title'},
-    {value: SORT_BY.PUBLISHED_DATE, label: 'Published date'}
-  ];
+  return [{value: SORT_BY.TITLE, label: 'Title'}];
 }
 
 function getFilterByOptions(entity: entityType) {

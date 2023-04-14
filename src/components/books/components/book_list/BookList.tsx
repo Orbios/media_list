@@ -34,8 +34,6 @@ function BookList({books, onEditBook, confirmDeleteBook}: Props) {
   }
 
   function renderBook(book: Book) {
-    const displayPageCount = book?.pageCount === 0 ? 'N/A' : `${book.pageCount} pages.`;
-
     return (
       <styled.bookRow key={book.id}>
         <styled.imageContainer>
@@ -55,11 +53,7 @@ function BookList({books, onEditBook, confirmDeleteBook}: Props) {
             </styled.actionButton>
           </styled.header>
 
-          <styled.info>
-            {book.publishedDate}
-            <span>{displayPageCount}</span>
-            <span>{book.genres?.join(', ')}</span>
-          </styled.info>
+          <styled.info>{book.genres?.join(', ')}</styled.info>
 
           <styled.actors>
             {book.authors?.join(', ')}

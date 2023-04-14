@@ -8,8 +8,6 @@ interface Book {
   description?: string;
   authors: string[];
   genres: string[];
-  publishedDate: number;
-  pageCount: number;
   language?: string;
   posterUrl: string;
   lists: number[];

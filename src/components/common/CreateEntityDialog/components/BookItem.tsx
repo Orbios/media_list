@@ -40,9 +40,7 @@ function BookItem({book, allBooks, action}: Props) {
       <styled.entityContent>
         <div>
           <h5>{volumeInfo.title}</h5>
-          <p>
-            {volumeInfo?.publishedDate} | {volumeInfo?.authors?.map(author => author).join(', ')}
-          </p>
+          <p>{volumeInfo?.authors?.map(author => author).join(', ')}</p>
         </div>
 
         <div>

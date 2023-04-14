@@ -5,7 +5,6 @@ import validationHelper from '@/helpers/validationHelper';
 
 import TextInput from '@/components/common/TextInput';
 import TextAreaInput from '@/components/common/TextAreaInput';
-import NumberInput from '@/components/common/NumberInput';
 import SelectInput from '@/components/common/SelectInput';
 
 interface RadioOption {
@@ -106,10 +105,6 @@ function EditBook({visible, book, genres, lists, onChange, close, save}: Props) 
             onChange={onChange}
             placeholder="Subtitle"
           />
-
-          <NumberInput name="publishedDate" label="Published date" value={book.publishedDate} onChange={onChange} />
-
-          <NumberInput name="pageCount" label="Page count" value={book.pageCount} onChange={onChange} />
 
           <SelectInput name="genres" label="Genres" options={options} value={selectedGenres} onChange={onChange} />
 
