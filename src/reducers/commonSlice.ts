@@ -10,12 +10,18 @@ interface AsyncActions {
   [key: string]: boolean;
 }
 
+interface CreateEntityAction {
+  entity: entityType;
+  action: (entity: Book | Movie) => void;
+}
+
 // Define a type for the slice state
 interface CommonState {
   asyncActions: AsyncActions;
   confirmAction?: ConfirmAction;
   preferenceDir: string;
   newPreferenceDir: string;
+  createEntityAction?: CreateEntityAction;
 }
 
 // Define the initial state using that type
@@ -23,7 +29,8 @@ const initialState: CommonState = {
   asyncActions: {},
   confirmAction: undefined,
   preferenceDir: '',
-  newPreferenceDir: ''
+  newPreferenceDir: '',
+  createEntityAction: undefined
 };
 
 export const commonSlice = createSlice({
@@ -49,6 +56,12 @@ export const commonSlice = createSlice({
     },
     setNewPreferenceDir: (state, action: PayloadAction<string>) => {
       state.newPreferenceDir = action.payload;
+    },
+    createEntityAction: (state, action: PayloadAction<CreateEntityAction>) => {
+      state.createEntityAction = action.payload;
+    },
+    createEntityActionCancel: state => {
+      state.createEntityAction = undefined;
     }
   }
 });
@@ -59,7 +72,9 @@ export const {
   confirmAction,
   confirmActionCancel,
   setPreferenceDir,
-  setNewPreferenceDir
+  setNewPreferenceDir,
+  createEntityAction,
+  createEntityActionCancel
 } = commonSlice.actions;
 
 export default commonSlice.reducer;

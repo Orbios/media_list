@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 
 import {useAppSelector, useAppDispatch} from '@/hooks';
-import {confirmAction} from '@/reducers/commonSlice';
+import {confirmAction, createEntityAction} from '@/reducers/commonSlice';
 
 import notificationHelper from '@/helpers/notificationHelper';
 
@@ -10,7 +10,6 @@ import bookServiceStubs from '@/services/bookServiceStubs';
 import PageWrapper from '@/components/common/PageWrapper';
 import Counter from '@/components/common/Counter';
 import FilterBar from '@/components/common/FilterBar';
-import CreateEntityDialog from '@/components/common/CreateEntityDialog';
 
 import EditBook from './components/EditBook';
 import BookList from './components/book_list/BookList';
@@ -29,7 +28,6 @@ function BooksPage() {
   const [genres, setGenres] = useState<string[]>([]);
   const [bookLists, setBookLists] = useState<List[]>([]);
 
-  const [createBookModalVisible, setCreateBookModalVisible] = useState<boolean>(false);
   const [bookToEdit, setBookToEdit] = useState<Book | null>(null);
 
   useEffect(() => {
@@ -61,8 +59,13 @@ function BooksPage() {
     setTotal(response.total);
   }
 
-  function closeCreateBookModal() {
-    setCreateBookModalVisible(false);
+  async function addNewBookAction() {
+    await dispatch(
+      createEntityAction({
+        entity: 'book',
+        action: async entity => await onCreateBook(entity)
+      })
+    );
   }
 
   async function onCreateBook(entity: Book | Movie) {
@@ -76,7 +79,6 @@ function BooksPage() {
 
     // 3. Open the edit book modal
     setBookToEdit(book);
-    closeCreateBookModal();
   }
 
   function onEditBook(book: Book) {
@@ -127,7 +129,7 @@ function BooksPage() {
 
     return (
       <PageWrapper>
-        <FilterBar total={total} entity="book" addNewEntityAction={() => setCreateBookModalVisible(true)} />
+        <FilterBar total={total} entity="book" addNewEntityAction={addNewBookAction} />
 
         <Counter total={total} title="Books" />
 
@@ -142,15 +144,6 @@ function BooksPage() {
             onChange={updateBookState}
             close={cancelEditBook}
             save={saveBook}
-          />
-        )}
-
-        {createBookModalVisible && (
-          <CreateEntityDialog
-            visible={createBookModalVisible}
-            entity="book"
-            close={closeCreateBookModal}
-            action={onCreateBook}
           />
         )}
       </PageWrapper>

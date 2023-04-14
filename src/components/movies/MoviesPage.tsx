@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 
 import {useAppSelector, useAppDispatch} from '@/hooks';
-import {confirmAction} from '@/reducers/commonSlice';
+import {confirmAction, createEntityAction} from '@/reducers/commonSlice';
 
 import notificationHelper from '@/helpers/notificationHelper';
 
@@ -10,7 +10,6 @@ import movieServiceStubs from '@/services/movieServiceStubs';
 import PageWrapper from '@/components/common/PageWrapper';
 import Counter from '@/components/common/Counter';
 import FilterBar from '@/components/common/FilterBar';
-import CreateEntityDialog from '@/components/common/CreateEntityDialog';
 
 import MovieList from './components/movie_list/MovieList';
 import EditMovie from './components/EditMovie';
@@ -30,7 +29,6 @@ function MoviesPage() {
   const [total, setTotal] = useState<number>(0);
 
   const [movieToEdit, setMovieToEdit] = useState<Movie | null>(null);
-  const [createMovieModalVisible, setCreateMovieModalVisible] = useState<boolean>(false);
 
   useEffect(() => {
     loadGenres();
@@ -80,15 +78,19 @@ function MoviesPage() {
     await loadMovies();
   }
 
-  function closeCreateMovieModal() {
-    setCreateMovieModalVisible(false);
+  async function addNewMovieAction() {
+    await dispatch(
+      createEntityAction({
+        entity: 'movie',
+        action: entity => onCreateMovie(entity)
+      })
+    );
   }
 
   function onCreateMovie(entity: Book | Movie) {
     const movie = entity as Movie;
 
     setMovieToEdit(movie);
-    closeCreateMovieModal();
   }
 
   function updateMovieState(field: string, value: any) {
@@ -121,7 +123,7 @@ function MoviesPage() {
 
     return (
       <PageWrapper>
-        <FilterBar total={total} entity="movie" addNewEntityAction={() => setCreateMovieModalVisible(true)} />
+        <FilterBar total={total} entity="movie" addNewEntityAction={addNewMovieAction} />
 
         <Counter total={total} title="Movies" />
 
@@ -136,15 +138,6 @@ function MoviesPage() {
             onChange={updateMovieState}
             close={cancelEditMovie}
             save={saveMovie}
-          />
-        )}
-
-        {createMovieModalVisible && (
-          <CreateEntityDialog
-            visible={createMovieModalVisible}
-            entity="movie"
-            close={closeCreateMovieModal}
-            action={onCreateMovie}
           />
         )}
       </PageWrapper>

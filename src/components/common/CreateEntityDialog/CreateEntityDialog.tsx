@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {Modal, Button} from '@/components/bootstrap';
-import {isEmpty, find} from 'lodash';
+import {isEmpty, upperFirst} from 'lodash';
 
 import config from '@/config';
 
@@ -96,7 +96,7 @@ function CreateEntityDialog({visible, entity, close, action}: Props) {
   }
 
   function render() {
-    const header = isBook ? 'Create Book' : 'Create Movie';
+    const header = `Create ${upperFirst(entity)}`;
 
     const pageNumber = Math.ceil(total / config.pageSize);
 
