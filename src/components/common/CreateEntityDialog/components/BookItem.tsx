@@ -2,6 +2,8 @@ import {Button} from '@/components/bootstrap';
 import {RiEditLine} from 'react-icons/ri';
 import {FaPlus} from 'react-icons/fa';
 
+import formatHelper from '@/helpers/formatHelper';
+
 import bookMapper from '@/services/mappers/bookMapper';
 
 import ImageRender from '@/components/common/ImageRender';
@@ -41,6 +43,7 @@ function BookItem({book, allBooks, action}: Props) {
         <div>
           <h5>{volumeInfo.title}</h5>
           <p>{volumeInfo?.authors?.map(author => author).join(', ')}</p>
+          <p>{formatHelper.truncateTextToLength(volumeInfo.description, 120)}</p>
         </div>
 
         <div>
