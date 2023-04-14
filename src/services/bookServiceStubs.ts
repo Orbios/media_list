@@ -144,7 +144,14 @@ function searchBooks(books: Book[], searchStr: string, filterBy: number) {
 
   if (!searchStr) return books;
 
-  const textSearchFields: string[] = ['title', 'subtitle', 'authors', 'publishedDate', 'description'];
+  const textSearchFields: string[] = [
+    'title',
+    'alternativeTitle',
+    'subtitle',
+    'authors',
+    'publishedDate',
+    'description'
+  ];
 
   return books.filter((book: any) => {
     for (const field of textSearchFields) {
