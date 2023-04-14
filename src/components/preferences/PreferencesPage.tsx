@@ -1,7 +1,8 @@
-import {Modal, Button} from 'react-bootstrap';
+import {Button} from '@/components/bootstrap';
 import {useState, useEffect} from 'react';
 
-import {useAppSelector} from '@/hooks';
+import {useAppSelector, useAppDispatch} from '@/hooks';
+import {setNewPreferenceDir} from '@/reducers/commonSlice';
 
 import {saveDirPref} from '@/files/preferences';
 import {getDbFilePath, moveFile} from '@/files/fileAccess';
@@ -10,12 +11,11 @@ import {showDialogForSelectingDirectory} from '@/electron/senders';
 import config from '@/config';
 import notificationHelper from '@/helpers/notificationHelper';
 
-interface Props {
-  visible?: boolean;
-  close: () => void;
-}
+import PageWrapper from '@/components/common/PageWrapper';
 
-function Preferences({visible, close}: Props) {
+function PreferencesPage() {
+  const dispatch = useAppDispatch();
+
   const preferenceDir = useAppSelector(state => state.common.preferenceDir);
   const newPreferenceDir = useAppSelector(state => state.common.newPreferenceDir);
 
@@ -23,7 +23,12 @@ function Preferences({visible, close}: Props) {
 
   useEffect(() => {
     if (!newPreferenceDir) return;
+
     moveDir(newPreferenceDir);
+
+    return () => {
+      dispatch(setNewPreferenceDir(''));
+    };
   }, [newPreferenceDir]);
 
   async function moveDir(newDir) {
@@ -42,25 +47,19 @@ function Preferences({visible, close}: Props) {
   }
 
   return (
-    <Modal show={visible} backdrop="static" onHide={close}>
-      <Modal.Header closeButton>
-        <Modal.Title>Preferences</Modal.Title>
-      </Modal.Header>
+    <PageWrapper title="Preferences">
+      <fieldset>
+        <legend>Db file:</legend>
 
-      <Modal.Body>
-        <fieldset className="fieldset-file-dir">
-          <legend>Db file:</legend>
-
-          <div className="fieldset-content">
-            <div className="form-group">
-              <p className="file-dir">{fileDir}</p>
-              <Button onClick={showDialogForSelectingDirectory}>Change directory</Button>
-            </div>
+        <div className="fieldset-content">
+          <div className="form-group">
+            <p className="file-dir">{fileDir}</p>
+            <Button onClick={showDialogForSelectingDirectory}>Change directory</Button>
           </div>
-        </fieldset>
-      </Modal.Body>
-    </Modal>
+        </div>
+      </fieldset>
+    </PageWrapper>
   );
 }
 
-export default Preferences;
+export default PreferencesPage;

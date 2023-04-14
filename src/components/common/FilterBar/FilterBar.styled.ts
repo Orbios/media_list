@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import {Row, Col, Button, Form} from 'react-bootstrap';
+import {Row, Col, Button, Form} from '@/components/bootstrap';
 
-import {mediaQueries} from '../../styles/shared';
+import {mediaQueries} from '@/styles/shared';
 
 export const wrapper = styled(Row)`
   display: flex;

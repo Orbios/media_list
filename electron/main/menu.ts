@@ -1,7 +1,4 @@
-import {Menu, MenuItem, dialog} from 'electron';
-
-import {getWindow} from '../window';
-import {openPreferences, importMovies} from './ipcMain/senders';
+import {Menu, MenuItem} from 'electron';
 
 export function buildMenu(): void {
   const template: MenuItem[] = getTemplate();
@@ -14,30 +11,32 @@ export function buildMenu(): void {
 function getTemplate(): MenuItem[] {
   const template = [
     {
-      label: 'File',
+      label: 'Edit',
       submenu: [
         {
-          label: 'Import',
-          id: 'import',
-          click(): void {
-            dialog
-              .showOpenDialog(getWindow(), {
-                buttonLabel: 'Select file',
-                properties: ['openFile'],
-                filters: [{name: 'Movies', extensions: ['csv']}]
-              })
-              .then(result => {
-                importMovies(result.filePaths);
-              });
-          }
+          label: 'Undo',
+          role: 'undo'
         },
         {
-          label: 'Preferences',
-          id: 'preferences',
-          accelerator: 'CmdOrCtrl+,',
-          click(): void {
-            openPreferences();
-          }
+          label: 'Redo',
+          role: 'redo'
+        },
+        {type: 'separator'},
+        {
+          label: 'Cut',
+          role: 'cut'
+        },
+        {
+          label: 'Copy',
+          role: 'copy'
+        },
+        {
+          label: 'Paste',
+          role: 'paste'
+        },
+        {
+          label: 'Select All',
+          role: 'selectAll'
         }
       ]
     },

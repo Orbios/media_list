@@ -6,13 +6,13 @@ const fs = require('fs-extra');
 
 import notificationHelper from '@/helpers/notificationHelper';
 import storageHelper from '@/services/storageHelper';
-import {reloadMainWindow} from '@/electron/senders';
 
+//TODO move to .env file
+const API_KEY = '219f99af';
 const NOT_APPLICABLE = 'N/A';
 
 //by default all imported movies are watched
 const PREDEFINED_LIST_ID = 1;
-const RELOAD_TIMEOUT = 3000;
 
 interface InputList {
   id: string;
@@ -30,7 +30,7 @@ async function importMoviesFromFile(filePath: string) {
     const inputList: InputList[] = await readData(filePath);
 
     const actions = inputList.map(input =>
-      axios.get(`http://www.omdbapi.com/?i=${input.id}&plot=short&r=json&apikey=219f99af`)
+      axios.get(`http://www.omdbapi.com/?i=${input.id}&plot=short&r=json&apikey=${API_KEY}`)
     );
 
     const db = await storageHelper.readData();
@@ -66,26 +66,25 @@ async function importMoviesFromFile(filePath: string) {
     }
     await storageHelper.saveData(db);
 
-    notificationHelper.message(`Movies were successfully imported! Added: ${added}, Skipped: ${skipped}`);
-
-    if (added > 0) {
-      setTimeout(() => {
-        reloadMainWindow();
-      }, RELOAD_TIMEOUT);
-    }
+    return {added, skipped};
   } catch (err) {
     console.log(err);
     notificationHelper.error('Error while importing movies!');
   }
 }
 
-async function searchMoviesByTitle(searchStr: string): Promise<MovieTruncated[] | undefined> {
+async function searchMoviesByTitle(
+  searchStr: string,
+  activePage: number
+): Promise<{total: number; movies: MovieTruncated[]} | undefined> {
   try {
-    const response = await axios.get(`http://www.omdbapi.com/?s=${searchStr}&plot=short&r=json&apikey=219f99af`);
+    const response = await axios.get(
+      `http://www.omdbapi.com/?s=${searchStr}&plot=short&r=json&page=${activePage}&apikey=${API_KEY}`
+    );
 
     if (response.data.Response === 'False') return undefined;
 
-    return response.data.Search.map((item: any) => {
+    const movies = response.data.Search.map((item: any) => {
       return {
         imdbID: item.imdbID,
         title: item.Title,
@@ -94,6 +93,11 @@ async function searchMoviesByTitle(searchStr: string): Promise<MovieTruncated[] 
         poster: item.Poster
       };
     });
+
+    return {
+      total: response.data.totalResults,
+      movies
+    };
   } catch (err) {
     console.log(err);
     notificationHelper.error('Error while searching movies!');
@@ -102,7 +106,7 @@ async function searchMoviesByTitle(searchStr: string): Promise<MovieTruncated[] 
 
 async function getMovieByIMDBId(id: string): Promise<Movie | undefined> {
   try {
-    const response = await axios.get(`http://www.omdbapi.com/?i=${id}&plot=short&r=json&apikey=219f99af`);
+    const response = await axios.get(`http://www.omdbapi.com/?i=${id}&plot=short&r=json&apikey=${API_KEY}`);
 
     if (response.data.Response === 'False') return undefined;
 

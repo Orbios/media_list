@@ -1,11 +1,12 @@
 import {useState, useEffect} from 'react';
-import {Modal, Button, ButtonGroup, ToggleButton, Form} from 'react-bootstrap';
-import {isEmpty} from 'lodash';
+import {Modal, Button, ButtonGroup, ToggleButton, Form} from '@/components/bootstrap';
 
-import TextInput from '../common/TextInput';
-import TextAreaInput from '../common/TextAreaInput';
-import NumberInput from '../common/NumberInput';
-import SelectInput from '../common/SelectInput';
+import validationHelper from '@/helpers/validationHelper';
+
+import TextInput from '@/components/common/TextInput';
+import TextAreaInput from '@/components/common/TextAreaInput';
+import NumberInput from '@/components/common/NumberInput';
+import SelectInput from '@/components/common/SelectInput';
 
 interface RadioOption {
   name: string;
@@ -38,21 +39,6 @@ function EditMovie({visible, movie, genres, lists, onChange, close, save}: Props
     });
     setListsOptions(movieListsOptions);
   }, [genres]);
-
-  function isEmptyErrorObject(obj: any) {
-    let isEmptyObject = true;
-
-    for (const key of Object.keys(obj)) {
-      const value = obj[key];
-
-      if (!isEmpty(value)) {
-        isEmptyObject = false;
-        break;
-      }
-    }
-
-    return isEmptyObject;
-  }
 
   function formIsValid() {
     const formErrors = {
@@ -87,7 +73,7 @@ function EditMovie({visible, movie, genres, lists, onChange, close, save}: Props
 
     setErrors(formErrors);
 
-    return isEmptyErrorObject(formErrors);
+    return validationHelper.isEmptyErrorObject(formErrors);
   }
 
   function onSave() {

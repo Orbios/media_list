@@ -1,4 +1,4 @@
-import {useImageLoader} from '../../hooks/useImageLoader';
+import {useImageLoader} from '@/hooks/useImageLoader';
 
 interface Props {
   url: string;

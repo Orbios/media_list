@@ -4,3 +4,5 @@ interface BasicOption {
   value: string;
   label: string;
 }
+
+type entityType = 'movie' | 'book';

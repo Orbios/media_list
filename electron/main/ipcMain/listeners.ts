@@ -20,10 +20,6 @@ function initIpcListeners(): void {
         selectedFolder(result.filePaths);
       });
   });
-
-  ipcMain.on('reload-main-window', _ => {
-    win.reload();
-  });
 }
 
 export default initIpcListeners;

@@ -1,7 +1,7 @@
 import {store} from '@/store';
 import {getDbFilePath} from '@/files/fileAccess';
 
-import moviesData from '@/data/media_list.json';
+import defaultData from '@/data/media_list.json';
 
 const fs = require('fs-extra');
 
@@ -41,5 +41,5 @@ async function saveData(data) {
 //helper methods
 
 function getDefaultData() {
-  return moviesData;
+  return defaultData;
 }

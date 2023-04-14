@@ -59,6 +59,15 @@
         "<node_internals>/**"
       ],
       "program": "${workspaceFolder}/scripts/generateDb.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Migrate Data",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/scripts/migrations/migrate.js"
     }
   ]
 }

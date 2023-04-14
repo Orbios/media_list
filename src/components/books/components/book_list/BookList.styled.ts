@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import Button from 'react-bootstrap/Button';
+import {Button} from '@/components/bootstrap';
 
-import {mediaQueries} from '../../styles/shared';
+import {mediaQueries} from '@/styles/shared';
 
 const linkColor = '#337ab7';
 
@@ -13,11 +13,11 @@ export const container = styled.div`
   }
 `;
 
-export const noMovies = styled.div`
+export const noBooks = styled.div`
   margin-top: 30px;
 `;
 
-export const movieRow = styled.div`
+export const bookRow = styled.div`
   font-size: 15px;
   padding: 10px;
   margin-left: 0;
@@ -86,7 +86,7 @@ export const actors = styled.p`
   color: ${linkColor};
 `;
 
-export const plot = styled.p`
+export const description = styled.p`
   overflow: hidden;
   position: relative;
   line-height: 1.4em;

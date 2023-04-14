@@ -3,7 +3,7 @@ import {RiDeleteBinLine, RiEditLine} from 'react-icons/ri';
 
 import notificationHelper from '@/helpers/notificationHelper';
 
-import ImageRender from './ImageRender';
+import ImageRender from '@/components/common/ImageRender';
 
 import * as styled from './MovieList.styled';
 

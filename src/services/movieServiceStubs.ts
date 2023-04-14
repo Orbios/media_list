@@ -1,7 +1,7 @@
-import config from '@/config';
-import storageHelper from '@/services/storageHelper';
-
 import SORT_BY from '@/constants/sortBy';
+
+import utils from '@/helpers/utils';
+import storageHelper from '@/services/storageHelper';
 
 const exports = {
   getMovies,
@@ -33,7 +33,7 @@ async function getMovies(page: number, sortBy: string, searchStr: string, sortAs
 
   sortMovies(movies, sortBy, sortAsc);
 
-  const result = getPage(movies, page, config.pageSize);
+  const result = utils.getItemsPerPage(movies, page);
 
   return Promise.resolve({
     total: movies.length,
@@ -130,11 +130,11 @@ function searchMovies(movies: Movie[], searchStr: string, filterBy: number) {
 
   return movies.filter((movie: any) => {
     for (const field of textSearchFields) {
-      if (containsString(movie[field], searchStr)) return true;
+      if (utils.containsString(movie[field], searchStr)) return true;
     }
 
     for (const genre of movie.genres) {
-      if (containsString(genre, searchStr)) return true;
+      if (utils.containsString(genre, searchStr)) return true;
     }
 
     return false;
@@ -155,16 +155,6 @@ function sortMovies(movies: Movie[], sortBy: string, isAsc: boolean) {
   if (sortBy === SORT_BY.RUNTIME) {
     movies.sort((x: any, y: any) => (x.runtime - y.runtime) * dirNum);
   }
-}
-
-function containsString(obj: any, searchStr: string) {
-  return obj.toString().toLowerCase().indexOf(searchStr.toLowerCase()) !== -1;
-}
-
-function getPage(movies: Movie[], page: number, perPage: number) {
-  const start = (page - 1) * perPage;
-  const end = page * perPage;
-  return movies.slice(start, end);
 }
 
 export default exports;

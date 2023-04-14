@@ -1,4 +1,4 @@
-import Form from 'react-bootstrap/Form';
+import {Form} from '@/components/bootstrap';
 import Select from 'react-select';
 
 interface Props {

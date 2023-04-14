@@ -1,4 +1,4 @@
-import {Pagination as BsPagination} from 'react-bootstrap';
+import {Pagination as BsPagination} from '@/components/bootstrap';
 import {range} from 'lodash';
 
 const MAX_BUTTONS = 4;

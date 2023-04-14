@@ -1,5 +1,5 @@
 import React from 'react';
-import Form from 'react-bootstrap/Form';
+import {Form} from '@/components/bootstrap';
 
 interface Props {
   name: string;

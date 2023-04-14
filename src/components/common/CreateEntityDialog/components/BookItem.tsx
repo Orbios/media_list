@@ -1,0 +1,64 @@
+import {Button} from '@/components/bootstrap';
+import {RiEditLine} from 'react-icons/ri';
+import {FaPlus} from 'react-icons/fa';
+
+import bookMapper from '@/services/mappers/bookMapper';
+
+import ImageRender from '@/components/common/ImageRender';
+
+import * as styled from '../CreateEntityDialog.styled';
+
+interface Props {
+  book: GoogleBook;
+  allBooks: Book[];
+  action: (book: Book) => void;
+}
+
+function BookItem({book, allBooks, action}: Props) {
+  const volumeInfo = book.volumeInfo;
+  const imageUrl = volumeInfo.imageLinks?.thumbnail || volumeInfo.imageLinks?.smallThumbnail || '';
+
+  async function createEntity(book: GoogleBook) {
+    const bookToCreate = bookMapper.mapGoogleBookToBook(book);
+    await action(bookToCreate);
+  }
+
+  async function editEntity(bookId?: number) {
+    if (!bookId) return;
+
+    const bookToEdit = allBooks.find(m => m.id === bookId);
+
+    if (!bookToEdit) return;
+
+    await action(bookToEdit);
+  }
+
+  return (
+    <styled.entityItem key={book?.googleId}>
+      <ImageRender title={volumeInfo.title} url={imageUrl} />
+
+      <styled.entityContent>
+        <div>
+          <h5>{volumeInfo.title}</h5>
+          <p>
+            {volumeInfo?.publishedDate} | {volumeInfo?.authors?.map(author => author).join(', ')}
+          </p>
+        </div>
+
+        <div>
+          {book.id ? (
+            <Button variant="outline-secondary" size="sm" onClick={() => editEntity(book?.id)}>
+              <RiEditLine />
+            </Button>
+          ) : (
+            <Button variant="success" size="sm" onClick={() => createEntity(book)}>
+              <FaPlus />
+            </Button>
+          )}
+        </div>
+      </styled.entityContent>
+    </styled.entityItem>
+  );
+}
+
+export default BookItem;

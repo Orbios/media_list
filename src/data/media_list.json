@@ -2572,5 +2572,62 @@
         "title": "Wishlist"
       }
     ]
+  },
+  "books": {
+    "genres": [
+      "Adult",
+      "Anthologies",
+      "Art",
+      "Audiobooks",
+      "Biographies",
+      "Body",
+      "Business",
+      "Children",
+      "Comics",
+      "Contemporary",
+      "Cooking",
+      "Crime",
+      "Engineering",
+      "Entertainment",
+      "Fantasy",
+      "Fiction",
+      "Food",
+      "General",
+      "Health",
+      "History",
+      "Horror",
+      "Investing",
+      "Literary",
+      "Literature",
+      "Manga",
+      "Media-help",
+      "Memoirs",
+      "Mind",
+      "Mystery",
+      "Nonfiction",
+      "Religion",
+      "Romance",
+      "Science",
+      "Self",
+      "Spirituality",
+      "Sports",
+      "Superheroes",
+      "Technology",
+      "Thrillers",
+      "Travel",
+      "Women",
+      "Young"
+    ],
+    "items": [],
+    "lists": [
+      {
+        "id": 1,
+        "title": "Read"
+      },
+      {
+        "id": 2,
+        "title": "Wishlist"
+      }
+    ]
   }
 }

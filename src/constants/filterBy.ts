@@ -1,6 +1,6 @@
 const FILTER_BY = {
   ALL: 0,
-  WATCHED: 1,
+  FINISHED: 1,
   WISHLIST: 2
 };
 
