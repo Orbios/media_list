@@ -4,6 +4,7 @@ import {RiDeleteBinLine, RiEditLine} from 'react-icons/ri';
 import notificationHelper from '@/helpers/notificationHelper';
 
 import ImageRender from '@/components/common/ImageRender';
+import DescriptionTruncated from '@/components/common/DescriptionTruncated';
 
 import * as styled from './MovieList.styled';
 
@@ -66,7 +67,7 @@ function MovieList({movies, onEditMovie, confirmDeleteMovie}: Props) {
             <span>{movie.actors}</span>
           </styled.actors>
 
-          <styled.plot>{movie.plot}</styled.plot>
+          <DescriptionTruncated text={movie.plot} />
         </styled.content>
       </styled.movieRow>
     );

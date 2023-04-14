@@ -4,6 +4,7 @@ import {RiDeleteBinLine, RiEditLine} from 'react-icons/ri';
 import notificationHelper from '@/helpers/notificationHelper';
 
 import ImageRender from '@/components/common/ImageRender';
+import DescriptionTruncated from '@/components/common/DescriptionTruncated';
 
 import * as styled from './BookList.styled';
 
@@ -60,7 +61,7 @@ function BookList({books, onEditBook, confirmDeleteBook}: Props) {
             {book.subtitle && <span>{book.subtitle}</span>}
           </styled.actors>
 
-          <styled.description>{book.description}</styled.description>
+          <DescriptionTruncated text={book.description} />
         </styled.content>
       </styled.bookRow>
     );

@@ -85,13 +85,3 @@ export const actors = styled.p`
   margin-top: 8px;
   color: ${linkColor};
 `;
-
-export const description = styled.p`
-  overflow: hidden;
-  position: relative;
-  line-height: 1.4em;
-  text-align: justify;
-  padding-right: 1.2em;
-  font-size: 14px;
-  margin-bottom: 0;
-`;
