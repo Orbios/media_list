@@ -1,5 +1,4 @@
 import {useState, useEffect} from 'react';
-import {Container} from '@/components/bootstrap';
 
 import {useAppSelector, useAppDispatch} from '@/hooks';
 import {confirmAction} from '@/reducers/commonSlice';
@@ -8,14 +7,13 @@ import notificationHelper from '@/helpers/notificationHelper';
 
 import movieServiceStubs from '@/services/movieServiceStubs';
 
+import PageWrapper from '@/components/common/PageWrapper';
 import Counter from '@/components/common/Counter';
 import FilterBar from '@/components/common/FilterBar';
 import CreateEntityDialog from '@/components/common/CreateEntityDialog';
 
 import MovieList from './components/movie_list/MovieList';
 import EditMovie from './components/EditMovie';
-
-import * as styled from './MoviesPage.styled';
 
 function MoviesPage() {
   const dispatch = useAppDispatch();
@@ -122,36 +120,34 @@ function MoviesPage() {
     const editMovieVisible = movieToEdit ? true : false;
 
     return (
-      <styled.wrapper>
-        <Container>
-          <FilterBar total={total} entity="movie" addNewEntityAction={() => setCreateMovieModalVisible(true)} />
+      <PageWrapper>
+        <FilterBar total={total} entity="movie" addNewEntityAction={() => setCreateMovieModalVisible(true)} />
 
-          <Counter total={total} title="Movies" />
+        <Counter total={total} title="Movies" />
 
-          <MovieList movies={movies} confirmDeleteMovie={confirmDeleteMovie} onEditMovie={onEditMovie} />
+        <MovieList movies={movies} confirmDeleteMovie={confirmDeleteMovie} onEditMovie={onEditMovie} />
 
-          {editMovieVisible && movieToEdit && (
-            <EditMovie
-              visible={editMovieVisible}
-              genres={genres}
-              movie={movieToEdit}
-              lists={movieLists}
-              onChange={updateMovieState}
-              close={cancelEditMovie}
-              save={saveMovie}
-            />
-          )}
+        {editMovieVisible && movieToEdit && (
+          <EditMovie
+            visible={editMovieVisible}
+            genres={genres}
+            movie={movieToEdit}
+            lists={movieLists}
+            onChange={updateMovieState}
+            close={cancelEditMovie}
+            save={saveMovie}
+          />
+        )}
 
-          {createMovieModalVisible && (
-            <CreateEntityDialog
-              visible={createMovieModalVisible}
-              entity="movie"
-              close={closeCreateMovieModal}
-              action={onCreateMovie}
-            />
-          )}
-        </Container>
-      </styled.wrapper>
+        {createMovieModalVisible && (
+          <CreateEntityDialog
+            visible={createMovieModalVisible}
+            entity="movie"
+            close={closeCreateMovieModal}
+            action={onCreateMovie}
+          />
+        )}
+      </PageWrapper>
     );
   }
 

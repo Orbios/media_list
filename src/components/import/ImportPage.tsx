@@ -22,10 +22,10 @@ function ImportPage() {
 
   async function handleFileChange(e) {
     const file = e.target.files[0];
-    await importBookmarks(file.path);
+    await importMovies(file.path);
   }
 
-  async function importBookmarks(filePath) {
+  async function importMovies(filePath) {
     if (!filePath) return;
 
     const importResults = await movieService.importMoviesFromFile(filePath);

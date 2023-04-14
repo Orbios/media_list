@@ -2629,5 +2629,19 @@
         "title": "Wishlist"
       }
     ]
+  },
+  "games": {
+    "genres": [],
+    "items": [],
+    "lists": [
+      {
+        "id": 1,
+        "title": "Played"
+      },
+      {
+        "id": 2,
+        "title": "Wishlist"
+      }
+    ]
   }
 }

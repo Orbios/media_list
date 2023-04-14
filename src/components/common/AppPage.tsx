@@ -36,7 +36,7 @@ function AppPage(props: Props) {
   }, [props.title]);
 
   function getTitle() {
-    return props.title ? `Bookmarks Archive - ${props.title}` : 'Bookmarks Archive';
+    return props.title ? `Media List - ${props.title}` : 'Media List';
   }
 
   function render() {

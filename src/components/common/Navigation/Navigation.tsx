@@ -3,6 +3,7 @@ import {MdLocalMovies} from 'react-icons/md';
 import {TbBooks} from 'react-icons/tb';
 import {ImDownload3} from 'react-icons/im';
 import {IoSettingsSharp} from 'react-icons/io5';
+import {SlGameController} from 'react-icons/sl';
 
 import Tooltip from '@/components/common/Tooltip';
 
@@ -17,6 +18,7 @@ interface CustomLink {
 const links: CustomLink[] = [
   {url: '/', icon: <MdLocalMovies />, tooltip: 'Movies'},
   {url: '/books', icon: <TbBooks />, tooltip: 'Books'},
+  {url: '/games', icon: <SlGameController />, tooltip: 'Games'},
   {url: '/import', icon: <ImDownload3 />, tooltip: 'Import'},
   {url: '/preferences', icon: <IoSettingsSharp />, tooltip: 'Preferences'}
 ];
