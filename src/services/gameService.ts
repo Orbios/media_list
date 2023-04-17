@@ -78,6 +78,8 @@ function getResultItem(data) {
     genres: data.genres.map(genre => genre.name).sort(),
     developers: data.developers.map(developer => developer.name).join(', '),
     posterUrl: data.background_image,
+    rating: data.rating,
+    ratingTop: data.rating_top,
     lists: [1]
   };
 

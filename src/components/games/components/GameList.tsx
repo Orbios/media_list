@@ -55,6 +55,11 @@ function GameList({games, onEditGame, confirmDeleteGame}: Props) {
           <styled.itemInfo>
             {game.released}
             <span>{game.genres.join(', ')}</span>
+            {game.rating && game.ratingTop && (
+              <span>
+                Rating: <b>{game.rating}</b> from {game.ratingTop}
+              </span>
+            )}
           </styled.itemInfo>
 
           <styled.contributors>{game.developers}</styled.contributors>

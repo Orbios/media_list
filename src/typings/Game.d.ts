@@ -10,5 +10,7 @@ interface Game {
   genres: string[];
   developers: string;
   posterUrl: string;
+  rating: number;
+  ratingTop: number;
   lists: number[];
 }

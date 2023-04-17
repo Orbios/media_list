@@ -120,7 +120,7 @@ function searchGames(games: Game[], searchStr: string, filterBy: number) {
 
   if (!searchStr) return games;
 
-  const textSearchFields: string[] = ['title', 'alternativeTitle', 'subtitle', 'authors', 'description'];
+  const textSearchFields: string[] = ['title', 'alternativeTitle', 'slug', 'developers', 'description'];
 
   return games.filter((game: any) => {
     for (const field of textSearchFields) {
@@ -143,6 +143,14 @@ function sortGames(games: Game[], sortBy: string, isAsc: boolean) {
 
   if (sortBy === SORT_BY.TITLE) {
     games.sort((x, y) => x.title.localeCompare(y.title) * dirNum);
+  }
+
+  if (sortBy === SORT_BY.RELEASE_DATE) {
+    games.sort((x: any, y: any) => (x.released - y.released) * dirNum);
+  }
+
+  if (sortBy === SORT_BY.RATING) {
+    games.sort((x: any, y: any) => (x.rating - y.rating) * dirNum);
   }
 }
 
