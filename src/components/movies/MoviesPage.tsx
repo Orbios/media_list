@@ -11,7 +11,7 @@ import PageWrapper from '@/components/common/PageWrapper';
 import Counter from '@/components/common/Counter';
 import FilterBar from '@/components/common/FilterBar';
 
-import MovieList from './components/movie_list/MovieList';
+import MovieList from './components/MovieList';
 import EditMovie from './components/EditMovie';
 
 function MoviesPage() {
@@ -87,7 +87,7 @@ function MoviesPage() {
     );
   }
 
-  function onCreateMovie(entity: Book | Movie) {
+  function onCreateMovie(entity: Book | Movie | Game) {
     const movie = entity as Movie;
 
     setMovieToEdit(movie);

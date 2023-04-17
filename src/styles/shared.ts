@@ -7,7 +7,9 @@ export const colors = {
   gold: 'darkgoldenrod',
   red: '#a71515',
   gray: '#e5e5e5',
+  grayLight: '#f8f8f8',
   darkGray: '#ccc',
+  link: '#337ab7',
   white: '#FFFFFF',
   black: '#000000'
 };

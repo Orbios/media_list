@@ -1,5 +1,6 @@
 const exports = {
-  truncateTextToLength
+  truncateTextToLength,
+  getYearFromDate
 };
 
 function truncateTextToLength(text = '', length, truncateFrom = 'start') {
@@ -16,6 +17,11 @@ function truncateTextToLength(text = '', length, truncateFrom = 'start') {
     default:
       return text;
   }
+}
+
+function getYearFromDate(dateString: string) {
+  const date = new Date(dateString);
+  return date.getFullYear();
 }
 
 export default exports;

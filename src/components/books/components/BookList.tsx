@@ -6,7 +6,7 @@ import notificationHelper from '@/helpers/notificationHelper';
 import ImageRender from '@/components/common/ImageRender';
 import DescriptionTruncated from '@/components/common/DescriptionTruncated';
 
-import * as styled from './BookList.styled';
+import * as styled from '@/styles/list.styled';
 
 interface Props {
   books: Book[];
@@ -17,7 +17,7 @@ interface Props {
 function BookList({books, onEditBook, confirmDeleteBook}: Props) {
   const anyBooks = !isEmpty(books);
 
-  if (!anyBooks) return <styled.noBooks>No books.</styled.noBooks>;
+  if (!anyBooks) return <styled.noItems>No books.</styled.noItems>;
 
   function updateBook(book: Book) {
     onEditBook(book);
@@ -36,13 +36,13 @@ function BookList({books, onEditBook, confirmDeleteBook}: Props) {
 
   function renderBook(book: Book) {
     return (
-      <styled.bookRow key={book.id}>
+      <styled.itemRow key={book.id}>
         <styled.imageContainer>
           <ImageRender url={book.posterUrl} title={book.title} />
         </styled.imageContainer>
 
-        <styled.content>
-          <styled.header>
+        <styled.itemContent>
+          <styled.itemHeader>
             <styled.actionLink variant="link" onClick={() => openLink(book.googleId)}>
               {book.title} {book.alternativeTitle && <span> ({book.alternativeTitle})</span>}
             </styled.actionLink>
@@ -52,23 +52,23 @@ function BookList({books, onEditBook, confirmDeleteBook}: Props) {
             <styled.actionButton variant="outline-secondary" size="sm" onClick={() => updateBook(book)}>
               <RiEditLine />
             </styled.actionButton>
-          </styled.header>
+          </styled.itemHeader>
 
-          <styled.info>{book.genres?.join(', ')}</styled.info>
+          <styled.itemInfo>{book.genres?.join(', ')}</styled.itemInfo>
 
-          <styled.actors>
+          <styled.contributors>
             {book.authors?.join(', ')}
             {book.subtitle && <span>{book.subtitle}</span>}
-          </styled.actors>
+          </styled.contributors>
 
           <DescriptionTruncated text={book.description} />
-        </styled.content>
-      </styled.bookRow>
+        </styled.itemContent>
+      </styled.itemRow>
     );
   }
 
   function render() {
-    return <styled.container>{books.map(movie => renderBook(movie))}</styled.container>;
+    return <styled.listContainer>{books.map(movie => renderBook(movie))}</styled.listContainer>;
   }
 
   return render();

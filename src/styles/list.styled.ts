@@ -1,23 +1,22 @@
 import styled from 'styled-components';
+
 import {Button} from '@/components/bootstrap';
 
-import {mediaQueries} from '@/styles/shared';
+import {colors, mediaQueries} from '@/styles/shared';
 
-const linkColor = '#337ab7';
-
-export const container = styled.div`
-  background-color: #f8f8f8;
+export const listContainer = styled.div`
+  background-color: ${colors.grayLight};
 
   @media ${mediaQueries.tablet} {
     padding: 10px 20px;
   }
 `;
 
-export const noBooks = styled.div`
+export const noItems = styled.div`
   margin-top: 30px;
 `;
 
-export const bookRow = styled.div`
+export const itemRow = styled.div`
   font-size: 15px;
   padding: 10px;
   margin-left: 0;
@@ -38,7 +37,7 @@ export const imageContainer = styled.div`
   border: 1px solid rgba(0, 0, 0, 0.1);
 `;
 
-export const content = styled.div`
+export const itemContent = styled.div`
   font-size: 12px;
   margin-left: 10px;
   text-align: left;
@@ -52,13 +51,13 @@ export const content = styled.div`
   }
 `;
 
-export const header = styled.h3`
+export const itemHeader = styled.h3`
   font-size: 17px;
   margin: 0;
 `;
 
 export const actionLink = styled(Button)`
-  color: ${linkColor};
+  color: ${colors.link};
   text-decoration: none;
   padding: 0;
   margin: 0;
@@ -76,12 +75,12 @@ export const actionButton = styled(Button)`
   color: black;
 `;
 
-export const info = styled.p`
+export const itemInfo = styled.p`
   overflow: hidden;
   text-overflow: ellipsis;
 `;
 
-export const actors = styled.p`
+export const contributors = styled.p`
   margin-top: 8px;
-  color: ${linkColor};
+  color: ${colors.link};
 `;

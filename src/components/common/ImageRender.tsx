@@ -8,7 +8,7 @@ interface Props {
 function ImageRender({url, title}: Props) {
   const [imageSrc] = useImageLoader(url);
 
-  return <img width={96} height={142} src={imageSrc} title={title} alt={title} />;
+  return <img width={96} height={142} src={imageSrc} title={title} alt={title} style={{objectFit: 'cover'}} />;
 }
 
 export default ImageRender;

@@ -12,7 +12,7 @@ interface AsyncActions {
 
 interface CreateEntityAction {
   entity: entityType;
-  action: (entity: Book | Movie) => void;
+  action: (entity: Book | Movie | Game) => void;
 }
 
 // Define a type for the slice state

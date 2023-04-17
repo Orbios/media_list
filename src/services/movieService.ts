@@ -4,11 +4,10 @@ import {includes} from 'lodash';
 
 const fs = require('fs-extra');
 
+import config from '@/config';
 import notificationHelper from '@/helpers/notificationHelper';
 import storageHelper from '@/services/storageHelper';
 
-//TODO move to .env file
-const API_KEY = '219f99af';
 const NOT_APPLICABLE = 'N/A';
 
 //by default all imported movies are watched
@@ -30,7 +29,7 @@ async function importMoviesFromFile(filePath: string) {
     const inputList: InputList[] = await readData(filePath);
 
     const actions = inputList.map(input =>
-      axios.get(`http://www.omdbapi.com/?i=${input.id}&plot=short&r=json&apikey=${API_KEY}`)
+      axios.get(`http://www.omdbapi.com/?i=${input.id}&plot=short&r=json&apikey=${config.omdb.apiKey}`)
     );
 
     const db = await storageHelper.readData();
@@ -79,7 +78,7 @@ async function searchMoviesByTitle(
 ): Promise<{total: number; movies: MovieTruncated[]} | undefined> {
   try {
     const response = await axios.get(
-      `http://www.omdbapi.com/?s=${searchStr}&plot=short&r=json&page=${activePage}&apikey=${API_KEY}`
+      `http://www.omdbapi.com/?s=${searchStr}&plot=short&r=json&page=${activePage}&apikey=${config.omdb.apiKey}`
     );
 
     if (response.data.Response === 'False') return undefined;
@@ -106,7 +105,7 @@ async function searchMoviesByTitle(
 
 async function getMovieByIMDBId(id: string): Promise<Movie | undefined> {
   try {
-    const response = await axios.get(`http://www.omdbapi.com/?i=${id}&plot=short&r=json&apikey=${API_KEY}`);
+    const response = await axios.get(`http://www.omdbapi.com/?i=${id}&plot=short&r=json&apikey=${config.omdb.apiKey}`);
 
     if (response.data.Response === 'False') return undefined;
 

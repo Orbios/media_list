@@ -12,7 +12,7 @@ import Counter from '@/components/common/Counter';
 import FilterBar from '@/components/common/FilterBar';
 
 import EditBook from './components/EditBook';
-import BookList from './components/book_list/BookList';
+import BookList from './components/BookList';
 
 function BooksPage() {
   const dispatch = useAppDispatch();
@@ -68,7 +68,7 @@ function BooksPage() {
     );
   }
 
-  async function onCreateBook(entity: Book | Movie) {
+  async function onCreateBook(entity: Book | Movie | Game) {
     const book = entity as Book;
 
     // 1. Check if genres exist in the database and add them if not

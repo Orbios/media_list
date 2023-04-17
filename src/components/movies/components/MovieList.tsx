@@ -6,7 +6,7 @@ import notificationHelper from '@/helpers/notificationHelper';
 import ImageRender from '@/components/common/ImageRender';
 import DescriptionTruncated from '@/components/common/DescriptionTruncated';
 
-import * as styled from './MovieList.styled';
+import * as styled from '@/styles/list.styled';
 
 interface Props {
   movies: Movie[];
@@ -17,7 +17,7 @@ interface Props {
 function MovieList({movies, onEditMovie, confirmDeleteMovie}: Props) {
   const anyMovies = !isEmpty(movies);
 
-  if (!anyMovies) return <styled.noMovies>No movies.</styled.noMovies>;
+  if (!anyMovies) return <styled.noItems>No movies.</styled.noItems>;
 
   function updateMovie(movie: Movie) {
     onEditMovie(movie);
@@ -38,13 +38,13 @@ function MovieList({movies, onEditMovie, confirmDeleteMovie}: Props) {
     const displayRuntime = isNaN(movie.runtime) ? 'N/A' : `${movie.runtime} min.`;
 
     return (
-      <styled.movieRow key={movie.id}>
+      <styled.itemRow key={movie.id}>
         <styled.imageContainer>
           <ImageRender url={movie.posterUrl} title={movie.title} />
         </styled.imageContainer>
 
-        <styled.content>
-          <styled.header>
+        <styled.itemContent>
+          <styled.itemHeader>
             <styled.actionLink variant="link" onClick={() => openLink(movie.imdbID)}>
               {movie.title}
             </styled.actionLink>
@@ -54,27 +54,27 @@ function MovieList({movies, onEditMovie, confirmDeleteMovie}: Props) {
             <styled.actionButton variant="outline-secondary" size="sm" onClick={() => updateMovie(movie)}>
               <RiEditLine />
             </styled.actionButton>
-          </styled.header>
+          </styled.itemHeader>
 
-          <styled.info>
+          <styled.itemInfo>
             {movie.year}
             <span>{displayRuntime}</span>
             <span>{movie.genres.join(', ')}</span>
-          </styled.info>
+          </styled.itemInfo>
 
-          <styled.actors>
+          <styled.contributors>
             {movie.director}
             <span>{movie.actors}</span>
-          </styled.actors>
+          </styled.contributors>
 
           <DescriptionTruncated text={movie.plot} />
-        </styled.content>
-      </styled.movieRow>
+        </styled.itemContent>
+      </styled.itemRow>
     );
   }
 
   function render() {
-    return <styled.container>{movies.map(movie => renderMovie(movie))}</styled.container>;
+    return <styled.listContainer>{movies.map(movie => renderMovie(movie))}</styled.listContainer>;
   }
 
   return render();

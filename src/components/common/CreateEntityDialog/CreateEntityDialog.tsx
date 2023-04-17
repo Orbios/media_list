@@ -10,12 +10,16 @@ import bookMapper from '@/services/mappers/bookMapper';
 import movieService from '@/services/movieService';
 import movieServiceStubs from '@/services/movieServiceStubs';
 import movieMapper from '@/services/mappers/movieMapper';
+import gameService from '@/services/gameService';
+import gameServiceStubs from '@/services/gameServiceStubs';
+import gameMapper from '@/services/mappers/gameMapper';
 
 import TextInput from '@/components/common/TextInput';
 import Pagination from '@/components/common/Pagination';
 
 import BookItem from './components/BookItem';
 import MovieItem from './components/MovieItem';
+import GameItem from './components/GameItem';
 
 import * as styled from './CreateEntityDialog.styled';
 
@@ -23,24 +27,36 @@ interface Props {
   visible: boolean;
   entity: entityType;
   close: () => void;
-  action: (entity: Book | Movie) => void;
+  action: (entity: Book | Movie | Game) => void;
 }
 
 function CreateEntityDialog({visible, entity, close, action}: Props) {
   const [searchStr, setSearchStr] = useState<string>('');
   const [activePage, setActivePage] = useState<number>(1);
 
-  const [searchResults, setSearchResults] = useState<GoogleBook[] | MovieTruncated[]>([]);
+  const [searchResults, setSearchResults] = useState<GoogleBook[] | MovieTruncated[] | RawgGame[]>([]);
   const [total, setTotal] = useState<number>(0);
-  const [allEntities, setAllEntities] = useState<Book[] | Movie[]>([]);
-
-  const isBook = entity === 'book';
+  const [allEntities, setAllEntities] = useState<Book[] | Movie[] | Game[]>([]);
 
   useEffect(() => {
     async function fetchEntities() {
-      const entities: Book[] | Movie[] = isBook
-        ? await bookServiceStubs.getAllBooks()
-        : await movieServiceStubs.getAllMovies();
+      let entities: Book[] | Movie[] | Game[] = [];
+
+      switch (entity) {
+        case 'book':
+          entities = await bookServiceStubs.getAllBooks();
+          break;
+
+        case 'movie':
+          entities = await movieServiceStubs.getAllMovies();
+          break;
+
+        case 'game':
+          entities = await gameServiceStubs.getAllGames();
+          break;
+        default:
+          break;
+      }
 
       setAllEntities(entities);
     }
@@ -63,35 +79,73 @@ function CreateEntityDialog({visible, entity, close, action}: Props) {
       return;
     }
 
-    if (isBook) {
-      const searchBooksResponse = await bookService.searchBooks(searchStr, activePage);
+    let results: any = [];
+    let totalItems: number = 0;
 
-      if (!searchBooksResponse || isEmpty(searchBooksResponse?.books)) {
-        setSearchResults([]);
-        return;
-      }
+    switch (entity) {
+      case 'book':
+        const searchBooksResponse = await bookService.searchBooks(searchStr, activePage);
 
-      const mappedBooks = bookMapper.mapBooks(searchBooksResponse.books, allEntities as Book[]);
+        if (!searchBooksResponse || isEmpty(searchBooksResponse?.books)) {
+          setSearchResults([]);
+          return;
+        }
 
-      setSearchResults(mappedBooks);
-      setTotal(searchBooksResponse.total);
-    } else {
-      const searchMoviesResponse = await movieService.searchMoviesByTitle(searchStr, activePage);
+        results = bookMapper.mapBooks(searchBooksResponse.books, allEntities as Book[]);
+        totalItems = searchBooksResponse.total;
+        break;
 
-      if (!searchMoviesResponse || isEmpty(searchMoviesResponse?.movies)) {
-        setSearchResults([]);
-        return;
-      }
+      case 'movie':
+        const searchMoviesResponse = await movieService.searchMoviesByTitle(searchStr, activePage);
 
-      const mappedMovies = movieMapper.mapMovies(searchMoviesResponse.movies, allEntities as Movie[]);
+        if (!searchMoviesResponse || isEmpty(searchMoviesResponse?.movies)) {
+          setSearchResults([]);
+          return;
+        }
 
-      setSearchResults(mappedMovies);
-      setTotal(searchMoviesResponse.total);
+        results = movieMapper.mapMovies(searchMoviesResponse.movies, allEntities as Movie[]);
+        totalItems = searchMoviesResponse.total;
+        break;
+
+      case 'game':
+        const searchGamesResponse = await gameService.searchGames(searchStr, activePage);
+
+        if (!searchGamesResponse || isEmpty(searchGamesResponse?.games)) {
+          setSearchResults([]);
+          return;
+        }
+
+        results = gameMapper.mapGames(searchGamesResponse.games, allEntities as Game[]);
+        totalItems = searchGamesResponse.total;
+        break;
+
+      default:
+        break;
     }
+
+    setSearchResults(results);
+    setTotal(totalItems);
   }
 
   async function addCustomEntity() {
-    const entityToAdd = isBook ? bookMapper.getDefaultCustomBook() : movieMapper.getDefaultCustomMovie();
+    let entityToAdd: any = undefined;
+
+    switch (entity) {
+      case 'book':
+        entityToAdd = bookMapper.getDefaultCustomBook();
+        break;
+
+      case 'movie':
+        entityToAdd = movieMapper.getDefaultCustomMovie();
+        break;
+
+      case 'game':
+        entityToAdd = gameMapper.getDefaultCustomGame();
+        break;
+      default:
+        break;
+    }
+
     await action(entityToAdd);
   }
 
@@ -120,11 +174,16 @@ function CreateEntityDialog({visible, entity, close, action}: Props) {
             <styled.searchContainer>
               <styled.scrollableContainer>
                 {searchResults.map(item => {
-                  return isBook ? (
-                    <BookItem book={item} allBooks={allEntities as Book[]} action={action} />
-                  ) : (
-                    <MovieItem movie={item} allMovies={allEntities as Movie[]} action={action} />
-                  );
+                  switch (entity) {
+                    case 'book':
+                      return <BookItem book={item} allBooks={allEntities as Book[]} action={action} />;
+                    case 'movie':
+                      return <MovieItem movie={item} allMovies={allEntities as Movie[]} action={action} />;
+                    case 'game':
+                      return <GameItem game={item} allGames={allEntities as Game[]} action={action} />;
+                    default:
+                      return null;
+                  }
                 })}
               </styled.scrollableContainer>
 
