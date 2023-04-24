@@ -17,7 +17,9 @@ function getDefaultCustomGame(): Game {
     developers: '',
     genres: [],
     posterUrl: '',
-    lists: []
+    lists: [],
+    rating: 0,
+    ratingTop: 0
   };
 
   return customGame;
