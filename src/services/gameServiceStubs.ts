@@ -9,7 +9,8 @@ const exports = {
   getGenres,
   getGameLists,
   saveGame,
-  deleteGame
+  deleteGame,
+  updateGamePoster
 };
 
 let jsondata: any = null;
@@ -103,6 +104,19 @@ async function deleteGame(id: number) {
   for (let i = 0; i < games.length; i++) {
     if (games[i].id === id) {
       games.splice(i, 1);
+    }
+  }
+
+  return saveData();
+}
+
+async function updateGamePoster(gameId: number, posterUrl: string) {
+  const data = await getData();
+  const games = data.games.items;
+
+  for (let i = 0; i < games.length; i++) {
+    if (games[i].id === gameId) {
+      games[i].posterUrl = posterUrl;
     }
   }
 

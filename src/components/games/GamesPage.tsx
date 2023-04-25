@@ -118,6 +118,16 @@ function GamesPage() {
     await loadGames();
   }
 
+  async function updateGamePoster(gameId: number, posterUrl: string) {
+    if (!gameId) return;
+
+    await gameServiceStubs.updateGamePoster(gameId, posterUrl);
+
+    notificationHelper.message('Game poster was updated');
+
+    await loadGames();
+  }
+
   function render() {
     const editGameVisible = gameToEdit ? true : false;
 
@@ -127,7 +137,12 @@ function GamesPage() {
 
         <Counter total={total} title="Games" />
 
-        <GameList games={games} confirmDeleteGame={confirmDeleteGame} onEditGame={onEditGame} />
+        <GameList
+          games={games}
+          confirmDeleteGame={confirmDeleteGame}
+          onEditGame={onEditGame}
+          onUpdatePoster={updateGamePoster}
+        />
 
         {editGameVisible && gameToEdit && (
           <EditGame

@@ -12,7 +12,8 @@ const exports = {
   addGenres,
   getBookLists,
   saveBook,
-  deleteBook
+  deleteBook,
+  updateBookPoster
 };
 
 let jsondata: any = null;
@@ -127,6 +128,19 @@ async function deleteBook(id: number) {
   for (let i = 0; i < books.length; i++) {
     if (books[i].id === id) {
       books.splice(i, 1);
+    }
+  }
+
+  return saveData();
+}
+
+async function updateBookPoster(bookId: number, posterUrl: string) {
+  const data = await getData();
+  const books = data.books.items;
+
+  for (let i = 0; i < books.length; i++) {
+    if (books[i].id === bookId) {
+      books[i].posterUrl = posterUrl;
     }
   }
 

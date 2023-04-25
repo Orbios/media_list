@@ -4,7 +4,7 @@ import {FaPlus} from 'react-icons/fa';
 
 import gameService from '@/services/gameService';
 
-import ImageRender from '@/components/common/ImageRender';
+import ImageCopyRenderer from './ImageCopyRenderer';
 
 import * as styled from '../CreateEntityDialog.styled';
 
@@ -35,7 +35,7 @@ function GameItem({game, allGames, action}: Props) {
 
   return (
     <styled.entityItem key={game.rawgId}>
-      <ImageRender title={game.name} url={game.background_image} />
+      <ImageCopyRenderer title={game.name} url={game.background_image} itemId={game.rawgId} />
 
       <styled.entityContent>
         <div>

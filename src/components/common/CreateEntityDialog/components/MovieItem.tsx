@@ -4,7 +4,7 @@ import {FaPlus} from 'react-icons/fa';
 
 import movieService from '@/services/movieService';
 
-import ImageRender from '@/components/common/ImageRender';
+import ImageCopyRenderer from './ImageCopyRenderer';
 
 import * as styled from '../CreateEntityDialog.styled';
 
@@ -35,7 +35,7 @@ function MovieItem({movie, allMovies, action}: Props) {
 
   return (
     <styled.entityItem key={movie.imdbID}>
-      <ImageRender title={movie.title} url={movie.poster} />
+      <ImageCopyRenderer title={movie.title} url={movie.poster} itemId={movie.imdbID} />
 
       <styled.entityContent>
         <div>

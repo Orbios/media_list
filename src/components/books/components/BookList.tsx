@@ -3,8 +3,8 @@ import {RiDeleteBinLine, RiEditLine} from 'react-icons/ri';
 
 import notificationHelper from '@/helpers/notificationHelper';
 
-import ImageRender from '@/components/common/ImageRender';
 import DescriptionTruncated from '@/components/common/DescriptionTruncated';
+import EditPoster from '@/components/common/EditPoster';
 
 import * as styled from '@/styles/list.styled';
 
@@ -12,9 +12,10 @@ interface Props {
   books: Book[];
   onEditBook: (book: Book) => void;
   confirmDeleteBook: (id: number) => void;
+  onUpdatePoster: (bookId: number, posterUrl: string) => void;
 }
 
-function BookList({books, onEditBook, confirmDeleteBook}: Props) {
+function BookList({books, onEditBook, confirmDeleteBook, onUpdatePoster}: Props) {
   const anyBooks = !isEmpty(books);
 
   if (!anyBooks) return <styled.noItems>No books.</styled.noItems>;
@@ -37,9 +38,7 @@ function BookList({books, onEditBook, confirmDeleteBook}: Props) {
   function renderBook(book: Book) {
     return (
       <styled.itemRow key={book.id}>
-        <styled.imageContainer>
-          <ImageRender url={book.posterUrl} title={book.title} />
-        </styled.imageContainer>
+        <EditPoster url={book.posterUrl} title={book.title} itemId={book.id} onUpdatePoster={onUpdatePoster} />
 
         <styled.itemContent>
           <styled.itemHeader>

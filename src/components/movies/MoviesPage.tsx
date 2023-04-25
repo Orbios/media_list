@@ -118,6 +118,16 @@ function MoviesPage() {
     setMovieToEdit(null);
   }
 
+  async function updateMoviePoster(movieId: number, posterUrl: string) {
+    if (!movieId) return;
+
+    await movieServiceStubs.updateMoviePoster(movieId, posterUrl);
+
+    notificationHelper.message('Movie poster was updated');
+
+    await loadMovies();
+  }
+
   function render() {
     const editMovieVisible = movieToEdit ? true : false;
 
@@ -127,7 +137,12 @@ function MoviesPage() {
 
         <Counter total={total} title="Movies" />
 
-        <MovieList movies={movies} confirmDeleteMovie={confirmDeleteMovie} onEditMovie={onEditMovie} />
+        <MovieList
+          movies={movies}
+          confirmDeleteMovie={confirmDeleteMovie}
+          onEditMovie={onEditMovie}
+          onUpdatePoster={updateMoviePoster}
+        />
 
         {editMovieVisible && movieToEdit && (
           <EditMovie

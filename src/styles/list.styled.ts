@@ -31,12 +31,6 @@ export const itemRow = styled.div`
   }
 `;
 
-export const imageContainer = styled.div`
-  height: 100%;
-  background-color: #eee;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-`;
-
 export const itemContent = styled.div`
   font-size: 12px;
   margin-left: 10px;

@@ -3,8 +3,8 @@ import {RiDeleteBinLine, RiEditLine} from 'react-icons/ri';
 
 import notificationHelper from '@/helpers/notificationHelper';
 
-import ImageRender from '@/components/common/ImageRender';
 import DescriptionTruncated from '@/components/common/DescriptionTruncated';
+import EditPoster from '@/components/common/EditPoster';
 
 import * as styled from '@/styles/list.styled';
 
@@ -12,9 +12,10 @@ interface Props {
   movies: Movie[];
   onEditMovie: (movie: Movie) => void;
   confirmDeleteMovie: (id: number) => void;
+  onUpdatePoster: (itemId: number, posterUrl: string) => void;
 }
 
-function MovieList({movies, onEditMovie, confirmDeleteMovie}: Props) {
+function MovieList({movies, onEditMovie, confirmDeleteMovie, onUpdatePoster}: Props) {
   const anyMovies = !isEmpty(movies);
 
   if (!anyMovies) return <styled.noItems>No movies.</styled.noItems>;
@@ -39,9 +40,7 @@ function MovieList({movies, onEditMovie, confirmDeleteMovie}: Props) {
 
     return (
       <styled.itemRow key={movie.id}>
-        <styled.imageContainer>
-          <ImageRender url={movie.posterUrl} title={movie.title} />
-        </styled.imageContainer>
+        <EditPoster url={movie.posterUrl} title={movie.title} itemId={movie.id} onUpdatePoster={onUpdatePoster} />
 
         <styled.itemContent>
           <styled.itemHeader>

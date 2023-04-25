@@ -9,7 +9,8 @@ const exports = {
   deleteMovie,
   saveMovie,
   getGenres,
-  getMovieLists
+  getMovieLists,
+  updateMoviePoster
 };
 
 let jsondata: any = null;
@@ -113,6 +114,19 @@ async function getGenres() {
 async function getMovieLists() {
   const data = await getData();
   return data.movies.lists;
+}
+
+async function updateMoviePoster(movieId: number, posterUrl: string) {
+  const data = await getData();
+  const movies = data.movies.items;
+
+  for (let i = 0; i < movies.length; i++) {
+    if (movies[i].id === movieId) {
+      movies[i].posterUrl = posterUrl;
+    }
+  }
+
+  return saveData();
 }
 
 // helper methods

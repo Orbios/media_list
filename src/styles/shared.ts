@@ -20,3 +20,6 @@ export const mediaQueries = {
 };
 
 export const sideNavWidth = '70px';
+
+export const posterWidth = 96;
+export const posterHeight = 142;

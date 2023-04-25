@@ -3,8 +3,8 @@ import {RiDeleteBinLine, RiEditLine} from 'react-icons/ri';
 
 import notificationHelper from '@/helpers/notificationHelper';
 
-import ImageRender from '@/components/common/ImageRender';
 import DescriptionTruncated from '@/components/common/DescriptionTruncated';
+import EditPoster from '@/components/common/EditPoster';
 
 import * as styled from '@/styles/list.styled';
 
@@ -12,9 +12,10 @@ interface Props {
   games: Game[];
   onEditGame: (game: Game) => void;
   confirmDeleteGame: (id: number) => void;
+  onUpdatePoster: (gameId: number, posterUrl: string) => void;
 }
 
-function GameList({games, onEditGame, confirmDeleteGame}: Props) {
+function GameList({games, onEditGame, confirmDeleteGame, onUpdatePoster}: Props) {
   const anyGames = !isEmpty(games);
 
   if (!anyGames) return <styled.noItems>No games.</styled.noItems>;
@@ -35,9 +36,7 @@ function GameList({games, onEditGame, confirmDeleteGame}: Props) {
   function renderGame(game: Game) {
     return (
       <styled.itemRow key={game.id}>
-        <styled.imageContainer>
-          <ImageRender url={game.posterUrl} title={game.title} />
-        </styled.imageContainer>
+        <EditPoster url={game.posterUrl} title={game.title} itemId={game.id} onUpdatePoster={onUpdatePoster} />
 
         <styled.itemContent>
           <styled.itemHeader>

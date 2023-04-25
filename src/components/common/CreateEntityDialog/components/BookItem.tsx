@@ -6,7 +6,7 @@ import formatHelper from '@/helpers/formatHelper';
 
 import bookMapper from '@/services/mappers/bookMapper';
 
-import ImageRender from '@/components/common/ImageRender';
+import ImageCopyRenderer from './ImageCopyRenderer';
 
 import * as styled from '../CreateEntityDialog.styled';
 
@@ -37,7 +37,7 @@ function BookItem({book, allBooks, action}: Props) {
 
   return (
     <styled.entityItem key={book?.googleId}>
-      <ImageRender title={volumeInfo.title} url={imageUrl} />
+      <ImageCopyRenderer title={volumeInfo.title} url={imageUrl} itemId={book.googleId} />
 
       <styled.entityContent>
         <div>

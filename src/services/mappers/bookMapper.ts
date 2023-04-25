@@ -48,7 +48,9 @@ function mapBooks(books: GoogleBook[], allBooks: Book[]): GoogleBook[] {
   const mappedBooks = books.map(googleBook => {
     const bookInDb: Book | undefined = find(
       allBooks,
-      (book: Book) => book.googleId === googleBook.googleId || book.title === googleBook.volumeInfo.title
+      (book: Book) =>
+        book.googleId === googleBook.googleId ||
+        (book.title === googleBook.volumeInfo.title && book.authors[0] === googleBook.volumeInfo.authors[0])
     );
 
     if (bookInDb) googleBook.id = bookInDb.id;

@@ -124,6 +124,16 @@ function BooksPage() {
     await loadBooks();
   }
 
+  async function updateBookPoster(bookId: number, posterUrl: string) {
+    if (!bookId) return;
+
+    await bookServiceStubs.updateBookPoster(bookId, posterUrl);
+
+    notificationHelper.message('Book poster was updated');
+
+    await loadBooks();
+  }
+
   function render() {
     const editBookVisible = bookToEdit ? true : false;
 
@@ -133,7 +143,12 @@ function BooksPage() {
 
         <Counter total={total} title="Books" />
 
-        <BookList books={books} confirmDeleteBook={confirmDeleteBook} onEditBook={onEditBook} />
+        <BookList
+          books={books}
+          confirmDeleteBook={confirmDeleteBook}
+          onEditBook={onEditBook}
+          onUpdatePoster={updateBookPoster}
+        />
 
         {editBookVisible && bookToEdit && (
           <EditBook
